@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Thought} from './thought';
+import {Thought} from './models/thought';
 
 @Component({
   selector: 'app-root',

@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { BubbleComponent } from './bubble/bubble.component';
-import { NewThoughtComponent } from './new-thought/new-thought.component';
+import { BubbleComponent } from './components/bubble/bubble.component';
+import { NewThoughtComponent } from './components/new-thought/new-thought.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule, MatSliderModule } from '@angular/material';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
