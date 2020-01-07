@@ -21,7 +21,6 @@ export class NewThoughtComponent implements OnInit {
   ngOnInit() {}
 
   submit(): void {
-    console.log('submitted')
     let thoughts: object[];
     try {
       thoughts = JSON.parse(localStorage.getItem('thoughts'));
@@ -29,7 +28,6 @@ export class NewThoughtComponent implements OnInit {
         thoughts = [];
       }
     } catch (e) {
-      console.log('caught error', e);
       thoughts = [];
     }
 
@@ -41,8 +39,6 @@ export class NewThoughtComponent implements OnInit {
       }
     };
     thoughts.push(newThought);
-    console.log(thoughts)
-    console.log(JSON.stringify(thoughts))
     localStorage.setItem('thoughts', JSON.stringify(thoughts));
 
     this.newThought.emit();

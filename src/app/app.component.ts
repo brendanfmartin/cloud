@@ -25,6 +25,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.getThoughts();
+    this.getLocation();
   }
 
   newThought(): void {
@@ -56,7 +57,6 @@ export class AppComponent implements OnInit {
         this.thoughts = [];
       }
     } catch (e) {
-      console.log('caught error', e);
       this.thoughts = [];
     }
 
@@ -67,6 +67,14 @@ export class AppComponent implements OnInit {
   }
 
   private getLocation(): void {
-
+    console.log('getting location')
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => console.log('location is', position),
+        (err) => console.error(err)
+      );
+    } else {
+      alert('Geolocation is not supported by this browser.');
+    }
   }
 }
