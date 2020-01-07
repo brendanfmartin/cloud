@@ -18,11 +18,12 @@ export class AppComponent implements OnInit {
   }
 
   private getThougths(): void {
-    console.log(this.thoughts);
     const localThoughts = localStorage.getItem('thoughts');
     try {
       this.thoughts = JSON.parse(localThoughts);
-      console.log(this.thoughts)
+      if (!this.thoughts) {
+        this.thoughts = [];
+      }
     } catch (e) {
       console.error(e);
       this.thoughts = [];
