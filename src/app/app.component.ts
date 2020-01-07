@@ -17,6 +17,11 @@ export class AppComponent implements OnInit {
     this.getThougths();
   }
 
+  clearThoughts(): void {
+    localStorage.setItem('thoughts', undefined);
+    this.getThougths();
+  }
+
   private getThougths(): void {
     const localThoughts = localStorage.getItem('thoughts');
     try {
@@ -25,7 +30,7 @@ export class AppComponent implements OnInit {
         this.thoughts = [];
       }
     } catch (e) {
-      console.error(e);
+      console.log('caught error', e);
       this.thoughts = [];
     }
   }
