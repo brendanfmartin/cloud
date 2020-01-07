@@ -1,18 +1,20 @@
-<section class="header" style="position: fixed; top: 0; height: 50px;">
-  <button (click)="clearThoughts()">Clear my head</button>
-</section>
+<!--<section class="header" style="position: fixed; top: 0; height: 50px;">-->
+<!--  <button (click)="clearThoughts()">Clear my head</button>-->
+<!--</section>-->
 
-<section class="content">
-  <ng-template [ngIf]="thoughts.length > 0">
-    <div *ngFor="let thought of thoughts; let i = index">
-      <app-bubble [thought]="thought"></app-bubble>
-    </div>
-  </ng-template>
-</section>
+<div id="mapid"></div>
+
+<!--<section class="content">-->
+<!--  <ng-template [ngIf]="thoughts.length > 0">-->
+<!--    <div *ngFor="let thought of thoughts; let i = index">-->
+<!--      <app-bubble [thought]="thought"></app-bubble>-->
+<!--    </div>-->
+<!--  </ng-template>-->
+<!--</section>-->
 
 
-<section class="footer" style="position: fixed; bottom: 0; height: 100px;">
-  <app-new-thought (newThought)="newThought()"></app-new-thought>
-</section>
+<!--<section class="footer" style="position: fixed; bottom: 0; height: 100px;">-->
+<!--  <app-new-thought (newThought)="newThought()"></app-new-thought>-->
+<!--</section>-->
 <!-- for when we add routes -->
 <!--<router-outlet></router-outlet>-->
