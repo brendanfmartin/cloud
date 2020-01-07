@@ -1,1 +1,4 @@
-<p>{{thought['thought']}}</p>
+<div style="position: fixed;" [ngStyle]="{'top': thought.loc.long + 'px', 'left': thought.loc.lat + 'px'}">
+  <h3>{{thought['thought']}}</h3>
+  <p>{{thought.loc.lat + ', ' + thought.loc.long}}</p>
+</div>

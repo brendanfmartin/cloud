@@ -1,4 +1,9 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+
+// https://stackoverflow.com/questions/6878761/javascript-how-to-create-random-longitude-and-latitudes
+const randomLatLong = (from, to, fixed): string => {
+  return (Math.random() * (to - from) + from).toFixed(fixed);
+};
 
 @Component({
   selector: 'app-new-thought',
@@ -16,6 +21,7 @@ export class NewThoughtComponent implements OnInit {
   ngOnInit() {}
 
   submit(): void {
+    console.log('submitted')
     let thoughts: object[];
     try {
       thoughts = JSON.parse(localStorage.getItem('thoughts'));
@@ -23,12 +29,20 @@ export class NewThoughtComponent implements OnInit {
         thoughts = [];
       }
     } catch (e) {
-      console.error(e);
+      console.log('caught error', e);
       thoughts = [];
     }
 
-    const newThought = {thought: this.thought};
+    const newThought = {
+      thought: this.thought,
+      loc: {
+        lat: randomLatLong(-180, 180, 3),
+        long: randomLatLong(-180, 180, 3)
+      }
+    };
     thoughts.push(newThought);
+    console.log(thoughts)
+    console.log(JSON.stringify(thoughts))
     localStorage.setItem('thoughts', JSON.stringify(thoughts));
 
     this.newThought.emit();

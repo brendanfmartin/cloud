@@ -7,7 +7,7 @@ import {Component, Input, OnInit} from '@angular/core';
 })
 export class BubbleComponent implements OnInit {
 
-  @Input() thought: string;
+  @Input() thought: any;
 
   constructor() { }
 
