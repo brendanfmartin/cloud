@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Thought} from './models/thought';
+import {Loc, Thought} from './models/thought';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +21,7 @@ export class AppComponent implements OnInit {
 
   L: any = window['L'];
 
-  location: any;
+  loc: Loc;
 
   ngOnInit() {
     this.getThoughts();
@@ -61,17 +61,26 @@ export class AppComponent implements OnInit {
     }
 
     this.thoughts.map((t: Thought) => {
-      const marker = this.L.marker([t.loc.lat, t.loc.lat]).addTo(this.mymap);
+      const marker = this.L.marker([t.loc.lat, t.loc.long]).addTo(this.mymap);
       marker.bindPopup(t.thought).openPopup();
     });
   }
 
   private getLocation(): void {
-    console.log('getting location')
+    console.log('getting location');
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => console.log('location is', position),
-        (err) => console.error(err)
+        (position) => {
+          console.log('location is', position);
+          this.loc = {long: position.coords.longitude.toString(), lat: position.coords.latitude.toString()};
+          localStorage.setItem('current_location', JSON.stringify(this.loc));
+        },
+        (err) => console.error(err),
+        {
+          enableHighAccuracy: false,
+          maximumAge: 10000,
+          timeout: 10000
+        }
       );
     } else {
       alert('Geolocation is not supported by this browser.');
