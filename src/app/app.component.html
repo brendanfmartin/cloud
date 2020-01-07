@@ -1,6 +1,6 @@
-<!--<section class="header" style="position: fixed; top: 0; height: 50px;">-->
-<!--  <button (click)="clearThoughts()">Clear my head</button>-->
-<!--</section>-->
+<section class="header" style="position: fixed; top: 0; height: 50px; z-index: 99999">
+  <button (click)="clearThoughts()">Clear my head</button>
+</section>
 
 <div id="mapid"></div>
 
@@ -13,8 +13,10 @@
 <!--</section>-->
 
 
-<!--<section class="footer" style="position: fixed; bottom: 0; height: 100px;">-->
-<!--  <app-new-thought (newThought)="newThought()"></app-new-thought>-->
-<!--</section>-->
-<!-- for when we add routes -->
-<!--<router-outlet></router-outlet>-->
+<section class="footer" style="position: fixed; bottom: 0; height: 100px; z-index: 99999">
+  <app-new-thought (newThought)="newThought()"></app-new-thought>
+</section>
+
+
+<!-- for when we add routes-->
+<router-outlet></router-outlet>
