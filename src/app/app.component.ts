@@ -21,20 +21,22 @@ export class AppComponent implements OnInit {
 
   L: any = window['L'];
 
+  location: any;
+
   ngOnInit() {
-    this.getThougths();
+    this.getThoughts();
   }
 
   newThought(): void {
-    this.getThougths();
+    this.getThoughts();
   }
 
   clearThoughts(): void {
     localStorage.setItem('thoughts', undefined);
-    this.getThougths();
+    this.getThoughts();
   }
 
-  private getThougths(): void {
+  private getThoughts(): void {
 
     if (!this.mapContainer) {
       this.mymap = this.L.map('mapid').setView([51.505, -0.09], 13);
@@ -62,5 +64,9 @@ export class AppComponent implements OnInit {
       const marker = this.L.marker([t.loc.lat, t.loc.lat]).addTo(this.mymap);
       marker.bindPopup(t.thought).openPopup();
     });
+  }
+
+  private getLocation(): void {
+
   }
 }
