@@ -8,12 +8,15 @@ import { NewThoughtComponent } from './components/new-thought/new-thought.compon
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule, MatSliderModule } from '@angular/material';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {AmplifyAngularModule, AmplifyService} from 'aws-amplify-angular';
+import { LoginComponent } from './login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BubbleComponent,
-    NewThoughtComponent
+    NewThoughtComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -24,9 +27,13 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     // material
     BrowserAnimationsModule,
     MatSliderModule,
-    MatInputModule
+    MatInputModule,
+
+    AmplifyAngularModule
   ],
-  providers: [],
+  providers: [
+    AmplifyService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
