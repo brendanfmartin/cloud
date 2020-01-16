@@ -7,7 +7,10 @@ import { BubbleComponent } from './components/bubble/bubble.component';
 import { NewThoughtComponent } from './components/new-thought/new-thought.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule, MatSliderModule } from '@angular/material';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+
+const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 
 @NgModule({
   declarations: [
@@ -24,7 +27,9 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     // material
     BrowserAnimationsModule,
     MatSliderModule,
-    MatInputModule
+    MatInputModule,
+
+    SocketIoModule.forRoot(config)
   ],
   providers: [],
   bootstrap: [AppComponent]
