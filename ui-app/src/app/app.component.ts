@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
     this.getThoughts();
   }
 
-  private getThoughts(): void {
+  private buildMap(): void {
     const lat = JSON.parse(localStorage.getItem('current_location')).lat;
     const long = JSON.parse(localStorage.getItem('current_location')).long;
 
@@ -50,7 +50,11 @@ export class AppComponent implements OnInit {
         accessToken: this.access_token
       }).addTo(this.mymap);
     }
+  }
 
+  private getThoughts(): void {
+
+    this.buildMap();
 
     const localThoughts = localStorage.getItem('thoughts');
     try {
