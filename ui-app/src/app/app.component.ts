@@ -38,12 +38,14 @@ export class AppComponent implements OnInit {
   }
 
   private getThoughts(): void {
+    const lat = JSON.parse(localStorage.getItem('current_location')).lat;
+    const long = JSON.parse(localStorage.getItem('current_location')).long;
 
     if (!this.mapContainer) {
-      this.mymap = this.L.map('mapid').setView([51.505, -0.09], 13);
+      this.mymap = this.L.map('mapid').setView([lat, long], 13);
       this.mapContainer = this.L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         attribution: this.attribution,
-        maxZoom: 1,
+        maxZoom: 10,
         id: 'mapbox/streets-v11',
         accessToken: this.access_token
       }).addTo(this.mymap);
@@ -68,19 +70,22 @@ export class AppComponent implements OnInit {
 
   private getLocation(): void {
     console.log('getting location');
+    const options = {
+      enableHighAccuracy: false,
+      maximumAge: 10000,
+      timeout: 10000
+    };
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           console.log('location is', position);
           this.loc = {long: position.coords.longitude.toString(), lat: position.coords.latitude.toString()};
           localStorage.setItem('current_location', JSON.stringify(this.loc));
+          this.getLocation();
         },
         (err) => console.error(err),
-        {
-          enableHighAccuracy: false,
-          maximumAge: 10000,
-          timeout: 10000
-        }
+        options
       );
     } else {
       alert('Geolocation is not supported by this browser.');
