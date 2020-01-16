@@ -68,8 +68,18 @@ export class AppComponent implements OnInit {
     });
   }
 
+  private handleLocation(position: Position): void {
+    this.loc = {long: position.coords.longitude.toString(), lat: position.coords.latitude.toString()};
+    localStorage.setItem('current_location', JSON.stringify(this.loc));
+    this.getLocation();
+  }
+
+  private handleError(err: PositionError): void {
+    alert(`Error getting location, code: ${err.code}, message: ${err.message}`);
+    console.error(err.message);
+  }
+
   private getLocation(): void {
-    console.log('getting location');
     const options = {
       enableHighAccuracy: false,
       maximumAge: 10000,
@@ -78,13 +88,8 @@ export class AppComponent implements OnInit {
 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          console.log('location is', position);
-          this.loc = {long: position.coords.longitude.toString(), lat: position.coords.latitude.toString()};
-          localStorage.setItem('current_location', JSON.stringify(this.loc));
-          this.getLocation();
-        },
-        (err) => console.error(err),
+        (position: Position) => this.handleLocation(position),
+        (err: PositionError) => this.handleError(err),
         options
       );
     } else {
