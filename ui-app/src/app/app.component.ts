@@ -9,13 +9,7 @@ import { latLng, tileLayer } from 'leaflet';
 })
 export class AppComponent implements OnInit {
 
-  options = {
-    layers: [
-      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
-    ],
-    zoom: 5,
-    center: latLng(46.879966, -121.726909)
-  };
+  options;
 
   // tslint:disable-next-line:variable-name
   private readonly access_token = 'pk.eyJ1IjoiYnJlbmRhbmZtYXJ0aW4iLCJhIjoiY2s1M2JnbTV5MDZ0djNrcGh0cXN0d2Y2bSJ9.4JYMZDKVqdJS0dJA0USyJw';
@@ -24,11 +18,6 @@ export class AppComponent implements OnInit {
   private readonly attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
 
   thoughts: object[] = [];
-
-  mapContainer: any;
-  mymap: any;
-
-  L: any = window['L'];
 
   loc: Loc;
 
@@ -46,24 +35,32 @@ export class AppComponent implements OnInit {
   }
 
   private buildMap(): void {
-    const lat = JSON.parse(localStorage.getItem('current_location')).lat;
-    const long = JSON.parse(localStorage.getItem('current_location')).long;
+    ////   this.mapContainer = this.L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    //     //     attribution: this.attribution,
+    //     //     maxZoom: 20,
+    //     //     id: 'mapbox/streets-v11',
+    //     //     accessToken: this.access_token
 
-    if (!this.mapContainer) {
-      this.mymap = this.L.map('mapid').setView([lat, long], 13);
-      this.mapContainer = this.L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-        attribution: this.attribution,
-        maxZoom: 20,
-        id: 'mapbox/streets-v11',
-        accessToken: this.access_token
-      }).addTo(this.mymap);
-    }
+    console.log('building map');
 
-    this.L.marker([lat, long]).addTo(this.mymap);
+
+    this.options = {
+      layers: [
+        tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
+      ],
+      zoom: 5,
+      center: latLng(
+        JSON.parse(localStorage.getItem('current_location')).lat,
+        JSON.parse(localStorage.getItem('current_location')).long
+      )
+    };
+
   }
 
   private getThoughts(): void {
+    console.log('getting thoughts');
 
+    // todo - order of build map and get thoughts
     this.buildMap();
 
     const localThoughts = localStorage.getItem('thoughts');
@@ -77,8 +74,8 @@ export class AppComponent implements OnInit {
     }
 
     this.thoughts.map((t: Thought) => {
-      const marker = this.L.marker([t.loc.lat, t.loc.long]).addTo(this.mymap);
-      marker.bindPopup(t.thought).openPopup();
+      // const marker = this.L.marker([t.loc.lat, t.loc.long]).addTo(this.mymap);
+      // marker.bindPopup(t.thought).openPopup();
     });
   }
 
