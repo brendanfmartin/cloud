@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Loc, Thought} from './models/thought';
+import { latLng, tileLayer } from 'leaflet';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +8,14 @@ import {Loc, Thought} from './models/thought';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
+
+  options = {
+    layers: [
+      tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
+    ],
+    zoom: 5,
+    center: latLng(46.879966, -121.726909)
+  };
 
   // tslint:disable-next-line:variable-name
   private readonly access_token = 'pk.eyJ1IjoiYnJlbmRhbmZtYXJ0aW4iLCJhIjoiY2s1M2JnbTV5MDZ0djNrcGh0cXN0d2Y2bSJ9.4JYMZDKVqdJS0dJA0USyJw';
@@ -24,7 +33,6 @@ export class AppComponent implements OnInit {
   loc: Loc;
 
   ngOnInit() {
-    this.getThoughts();
     this.getLocation();
   }
 
@@ -45,11 +53,13 @@ export class AppComponent implements OnInit {
       this.mymap = this.L.map('mapid').setView([lat, long], 13);
       this.mapContainer = this.L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
         attribution: this.attribution,
-        maxZoom: 10,
+        maxZoom: 20,
         id: 'mapbox/streets-v11',
         accessToken: this.access_token
       }).addTo(this.mymap);
     }
+
+    this.L.marker([lat, long]).addTo(this.mymap);
   }
 
   private getThoughts(): void {
@@ -75,7 +85,7 @@ export class AppComponent implements OnInit {
   private handleLocation(position: Position): void {
     this.loc = {long: position.coords.longitude.toString(), lat: position.coords.latitude.toString()};
     localStorage.setItem('current_location', JSON.stringify(this.loc));
-    this.getLocation();
+    this.getThoughts();
   }
 
   private handleError(err: PositionError): void {
@@ -84,6 +94,8 @@ export class AppComponent implements OnInit {
   }
 
   private getLocation(): void {
+    // get from cache if in cache
+
     const options = {
       enableHighAccuracy: false,
       maximumAge: 10000,

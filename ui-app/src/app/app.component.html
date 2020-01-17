@@ -2,7 +2,12 @@
   <button (click)="clearThoughts()">Clear my head</button>
 </section>
 
-<div id="mapid"></div>
+<!--<div id="mapid"></div>-->
+
+<div style="height: 300px;"
+     leaflet
+     [leafletOptions]="options">
+</div>
 
 <!--<section class="content">-->
 <!--  <ng-template [ngIf]="thoughts.length > 0">-->
