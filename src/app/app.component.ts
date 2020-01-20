@@ -1,5 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Loc, Thought} from './models/thought';
+import {Observable, Subscription} from 'rxjs';
+import {DocumentService} from './services/document.service';
 
 @Component({
   selector: 'app-root',
@@ -23,9 +25,18 @@ export class AppComponent implements OnInit {
 
   loc: Loc;
 
+  documents: Observable<string[]>;
+  currentDoc: string;
+  private _docSub: Subscription;
+
+  constructor(private documentService: DocumentService) {}
+
   ngOnInit() {
     this.getThoughts();
     this.getLocation();
+    this.documents = this.documentService.documents;
+    this._docSub = this.documentService.currentDocument.subscribe(doc => alert(doc.id));
+    console.log(this.documents);
   }
 
   newThought(): void {
