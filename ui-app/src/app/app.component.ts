@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Loc, Thought} from './models/thought';
-import {latLng, tileLayer} from 'leaflet';
+import { circle, latLng, tileLayer } from 'leaflet';
 import {LocationService} from './services/location.service';
 import {Subscription} from 'rxjs';
 
@@ -29,6 +29,11 @@ export class AppComponent implements OnInit {
   mymap: any;
 
   L: any = window['L'];
+
+  showLayer = true;
+  layer;
+
+  fetchingLocation: boolean;
 
   constructor(private locationService: LocationService) {}
 
@@ -78,6 +83,12 @@ export class AppComponent implements OnInit {
       )
     };
 
+    this.layer = circle([
+      JSON.parse(this.locationService.getLocation()).lat,
+      JSON.parse(this.locationService.getLocation()).long
+    ], { radius: 100 });
+
+
     // this.options = {
     //   layers: [
     //     tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
@@ -108,7 +119,7 @@ export class AppComponent implements OnInit {
 
     this.localThoughts$ = this.locationService.getThoughts().subscribe(
       (res) => {
-        console.log(res);
+        // console.log(res);
         try {
           this.thoughts = JSON.parse(res);
           if (!this.thoughts) {
@@ -127,12 +138,14 @@ export class AppComponent implements OnInit {
   }
 
   private handleLocation(position: Position): void {
+    this.fetchingLocation = false;
     this.loc = {long: position.coords.longitude.toString(), lat: position.coords.latitude.toString()};
     this.locationService.setLocation(this.loc);
     this.getThoughts();
   }
 
   private handleError(err: PositionError): void {
+    this.fetchingLocation = false;
     alert(`Error getting location, code: ${err.code}, message: ${err.message}`);
     console.error(err.message);
   }
@@ -141,23 +154,25 @@ export class AppComponent implements OnInit {
     // get from cache if in cache
 
     if (this.locationService.getLocation()) {
+      console.log('getting stored location', this.locationService.getLocation())
       this.getThoughts();
-    }
-
-    const options = {
-      enableHighAccuracy: false,
-      maximumAge: 10000,
-      timeout: 10000
-    };
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position: Position) => this.handleLocation(position),
-        (err: PositionError) => this.handleError(err),
-        options
-      );
     } else {
-      alert('Geolocation is not supported by this browser.');
+      this.fetchingLocation = true;
+      const options = {
+        enableHighAccuracy: false,
+        maximumAge: 10000,
+        timeout: 10000
+      };
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position: Position) => this.handleLocation(position),
+          (err: PositionError) => this.handleError(err),
+          options
+        );
+      } else {
+        alert('Geolocation is not supported by this browser.');
+      }
     }
   }
 }

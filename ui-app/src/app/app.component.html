@@ -8,6 +8,11 @@
      leaflet
      [leafletOptions]="options"
      [leafletLayersControl]="layersControl">
+  <div *ngIf="showLayer" [leafletLayer]="layer"></div>
+</div>
+
+<div *ngIf="fetchingLocation" style="height: 100%">
+  <h1>fetching location</h1>
 </div>
 
 <section class="footer" style="position: fixed; bottom: 0; height: 100px; z-index: 99999">
