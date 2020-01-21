@@ -2,16 +2,12 @@
   <button (click)="clearThoughts()">Clear my head</button>
 </section>
 
-<div id="mapid"></div>
+<!--<div id="mapid"></div>-->
 
-<!--<section class="content">-->
-<!--  <ng-template [ngIf]="thoughts.length > 0">-->
-<!--    <div *ngFor="let thought of thoughts; let i = index">-->
-<!--      <app-bubble [thought]="thought"></app-bubble>-->
-<!--    </div>-->
-<!--  </ng-template>-->
-<!--</section>-->
-
+<div *ngIf="options" style="height: 300px;"
+     leaflet
+     [leafletOptions]="options">
+</div>
 
 <section class="footer" style="position: fixed; bottom: 0; height: 100px; z-index: 99999">
   <app-new-thought (newThought)="newThought()"></app-new-thought>
