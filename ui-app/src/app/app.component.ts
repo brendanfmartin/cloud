@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Loc, Thought} from './models/thought';
-import {circle, latLng, polygon, tileLayer} from 'leaflet';
+import {latLng, tileLayer} from 'leaflet';
 import {LocationService} from './services/location.service';
 import {Subscription} from 'rxjs';
 
@@ -66,12 +66,12 @@ export class AppComponent implements OnInit {
       layers: [
         tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
           attribution: this.attribution,
-          maxZoom: 10,
+          maxZoom: 20,
           id: 'mapbox/streets-v11',
           accessToken: this.access_token
         })
       ],
-      zoom: 15,
+      zoom: 16,
       center: latLng(
         JSON.parse(this.locationService.getLocation()).lat,
         JSON.parse(this.locationService.getLocation()).long
