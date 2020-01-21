@@ -1,23 +1,26 @@
-<section class="header" style="position: fixed; top: 0; height: 20px; z-index: 99999">
-  <button (click)="clearThoughts()">Clear my head</button>
-</section>
-
-<!--<div id="mapid"></div>-->
-
-<div *ngIf="options" style="height: 100%"
-     leaflet
-     [leafletOptions]="options"
-     [leafletLayersControl]="layersControl">
-  <div *ngIf="showLayer" [leafletLayer]="layer"></div>
-</div>
-
-<div *ngIf="fetchingLocation" style="height: 100%">
+<ng-container *ngIf="fetchingLocation" style="height: 100%">
   <h1>fetching location</h1>
-</div>
+</ng-container>
 
-<section class="footer" style="position: fixed; bottom: 0; height: 100px; z-index: 99999">
-  <app-new-thought (newThought)="newThought()"></app-new-thought>
-</section>
+<ng-container *ngIf="!fetchingLocation">
+  <section class="header" style="position: fixed; top: 0; height: 20px; z-index: 99999">
+    <button (click)="clearThoughts()">Clear my head</button>
+  </section>
+
+  <!--<div id="mapid"></div>-->
+
+  <div *ngIf="options" style="height: 100%"
+       leaflet
+       [leafletOptions]="options"
+       [leafletLayersControl]="layersControl">
+    <div *ngIf="showLayer" [leafletLayer]="layer"></div>
+  </div>
+
+  <section class="footer" style="position: fixed; bottom: 0; height: 100px; z-index: 99999">
+    <app-new-thought (newThought)="newThought()"></app-new-thought>
+  </section>
+</ng-container>
+
 
 
 <!-- for when we add routes-->
