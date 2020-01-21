@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Loc, Thought} from './models/thought';
-import { latLng, tileLayer } from 'leaflet';
+import {latLng, tileLayer} from 'leaflet';
 import {LocationService} from './services/location.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -19,8 +20,8 @@ export class AppComponent implements OnInit {
   private readonly attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
 
   thoughts: object[] = [];
-
   loc: Loc;
+  localThoughts$: Subscription;
 
   constructor(private locationService: LocationService) {}
 
@@ -33,7 +34,7 @@ export class AppComponent implements OnInit {
   }
 
   clearThoughts(): void {
-    localStorage.setItem('thoughts', undefined);
+    // localStorage.setItem('thoughts', undefined);
     this.getThoughts();
   }
 
@@ -66,20 +67,24 @@ export class AppComponent implements OnInit {
     // todo - order of build map and get thoughts
     this.buildMap();
 
-    const localThoughts = this.locationService.getThoughts();
-    try {
-      this.thoughts = JSON.parse(localThoughts);
-      if (!this.thoughts) {
-        this.thoughts = [];
-      }
-    } catch (e) {
-      this.thoughts = [];
-    }
+    this.localThoughts$ = this.locationService.getThoughts().subscribe(
+      (res) => {
+        console.log(res);
+        try {
+          this.thoughts = JSON.parse(res);
+          if (!this.thoughts) {
+            this.thoughts = [];
+          }
+        } catch (e) {
+          this.thoughts = [];
+        }
 
-    this.thoughts.map((t: Thought) => {
-      // const marker = this.L.marker([t.loc.lat, t.loc.long]).addTo(this.mymap);
-      // marker.bindPopup(t.thought).openPopup();
-    });
+        this.thoughts.map((t: Thought) => {
+          // const marker = this.L.marker([t.loc.lat, t.loc.long]).addTo(this.mymap);
+          // marker.bindPopup(t.thought).openPopup();
+        });
+      }
+    );
   }
 
   private handleLocation(position: Position): void {
