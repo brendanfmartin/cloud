@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Loc, Thought} from './models/thought';
-import {latLng, tileLayer} from 'leaflet';
+import {circle, latLng, polygon, tileLayer} from 'leaflet';
 import {LocationService} from './services/location.service';
 import {Subscription} from 'rxjs';
 
@@ -22,6 +22,8 @@ export class AppComponent implements OnInit {
   thoughts: object[] = [];
   loc: Loc;
   localThoughts$: Subscription;
+
+  layersControl: any;
 
   mapContainer: any;
   mymap: any;
@@ -60,22 +62,41 @@ export class AppComponent implements OnInit {
     //
     // this.L.marker([lat, long]).addTo(this.mymap);
 
-
     this.options = {
       layers: [
         tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
           attribution: this.attribution,
-          maxZoom: 20,
+          maxZoom: 10,
           id: 'mapbox/streets-v11',
           accessToken: this.access_token
         })
       ],
-      zoom: 5,
+      zoom: 15,
       center: latLng(
         JSON.parse(this.locationService.getLocation()).lat,
         JSON.parse(this.locationService.getLocation()).long
       )
     };
+
+    // this.options = {
+    //   layers: [
+    //     tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
+    //   ],
+    //   zoom: 5,
+    //   center: latLng(46.879966, -121.726909)
+    // };
+    //
+    // this.layersControl = {
+    //   baseLayers: {
+    //     'Open Street Map': tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' }),
+    //     'Open Cycle Map': tileLayer('http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
+    //   },
+    //   overlays: {
+    //     'Big Circle': circle([ 46.95, -122 ], { radius: 5000 }),
+    //     'Big Square': polygon([[ 46.8, -121.55 ], [ 46.9, -121.55 ], [ 46.9, -121.7 ], [ 46.8, -121.7 ]])
+    //   }
+    // };
+
 
   }
 

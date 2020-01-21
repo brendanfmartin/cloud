@@ -4,9 +4,10 @@
 
 <!--<div id="mapid"></div>-->
 
-<div *ngIf="options" style="height: 300px;"
+<div *ngIf="options" style="height: 100%"
      leaflet
-     [leafletOptions]="options">
+     [leafletOptions]="options"
+     [leafletLayersControl]="layersControl">
 </div>
 
 <section class="footer" style="position: fixed; bottom: 0; height: 100px; z-index: 99999">
