@@ -23,6 +23,11 @@ export class AppComponent implements OnInit {
   loc: Loc;
   localThoughts$: Subscription;
 
+  mapContainer: any;
+  mymap: any;
+
+  L: any = window['L'];
+
   constructor(private locationService: LocationService) {}
 
   ngOnInit() {
@@ -39,18 +44,31 @@ export class AppComponent implements OnInit {
   }
 
   private buildMap(): void {
-    ////   this.mapContainer = this.L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    //     //     attribution: this.attribution,
-    //     //     maxZoom: 20,
-    //     //     id: 'mapbox/streets-v11',
-    //     //     accessToken: this.access_token
 
-    console.log('building map');
+    // const lat = JSON.parse(localStorage.getItem('current_location')).lat;
+    // const long = JSON.parse(localStorage.getItem('current_location')).long;
+    //
+    // if (!this.mapContainer) {
+    //   this.mymap = this.L.map('mapid').setView([lat, long], 13);
+    //   this.mapContainer = this.L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    //     attribution: this.attribution,
+    //     maxZoom: 20,
+    //     id: 'mapbox/streets-v11',
+    //     accessToken: this.access_token
+    //   }).addTo(this.mymap);
+    // }
+    //
+    // this.L.marker([lat, long]).addTo(this.mymap);
 
 
     this.options = {
       layers: [
-        tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
+        tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+          attribution: this.attribution,
+          maxZoom: 20,
+          id: 'mapbox/streets-v11',
+          accessToken: this.access_token
+        })
       ],
       zoom: 5,
       center: latLng(
