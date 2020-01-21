@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Loc, Thought} from './models/thought';
 import { latLng, tileLayer } from 'leaflet';
+import {LocationService} from './services/location.service';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,8 @@ export class AppComponent implements OnInit {
   thoughts: object[] = [];
 
   loc: Loc;
+
+  constructor(private locationService: LocationService) {}
 
   ngOnInit() {
     this.getLocation();
@@ -50,8 +53,8 @@ export class AppComponent implements OnInit {
       ],
       zoom: 5,
       center: latLng(
-        JSON.parse(localStorage.getItem('current_location')).lat,
-        JSON.parse(localStorage.getItem('current_location')).long
+        JSON.parse(this.locationService.getLocation()).lat,
+        JSON.parse(this.locationService.getLocation()).long
       )
     };
 
@@ -63,7 +66,7 @@ export class AppComponent implements OnInit {
     // todo - order of build map and get thoughts
     this.buildMap();
 
-    const localThoughts = localStorage.getItem('thoughts');
+    const localThoughts = this.locationService.getThoughts();
     try {
       this.thoughts = JSON.parse(localThoughts);
       if (!this.thoughts) {
@@ -81,7 +84,7 @@ export class AppComponent implements OnInit {
 
   private handleLocation(position: Position): void {
     this.loc = {long: position.coords.longitude.toString(), lat: position.coords.latitude.toString()};
-    localStorage.setItem('current_location', JSON.stringify(this.loc));
+    this.locationService.setLocation(this.loc);
     this.getThoughts();
   }
 
@@ -92,6 +95,10 @@ export class AppComponent implements OnInit {
 
   private getLocation(): void {
     // get from cache if in cache
+
+    if (this.locationService.getLocation()) {
+      this.getThoughts();
+    }
 
     const options = {
       enableHighAccuracy: false,

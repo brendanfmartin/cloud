@@ -1,17 +1,11 @@
-const express = require('express');
-const app = express();
+const app = require('express')();
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const uuidv4 = require('uuid/v4');
 const bodyParser = require('body-parser');
-var path = require('path');
-
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-
-app.use(express.static(__dirname + '/ui'));
-
 
 let thoughts = {};
 
@@ -49,12 +43,6 @@ const port = process.env.PORT || 3000;
 
 http.listen(port, () => {
   console.log('Listening on port', port);
-});
-
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/', (req, res) => {
-  res.render('./ui/index.html').end();
 });
 
 
