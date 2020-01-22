@@ -23,12 +23,6 @@ export class AppComponent implements OnInit {
   loc: Loc;
   localThoughts$: Subscription;
 
-  layersControl: any;
-
-  layers = [];
-  myLayer: any[];
-  markers: Layer[] = [];
-
   fetchingLocation: boolean;
 
   L = window['L'];
@@ -58,7 +52,7 @@ export class AppComponent implements OnInit {
     this.map = this.L.map('mapid').setView([
       JSON.parse(this.locationService.getLocation()).lat,
       JSON.parse(this.locationService.getLocation()).long
-    ], 13);
+    ], 15);
 
     this.L.tileLayer(this.url, {
       attribution: this.attribution,
@@ -67,12 +61,15 @@ export class AppComponent implements OnInit {
       accessToken: this.access_token
     }).addTo(this.map);
 
-    this.L.marker([
+    this.L.circle([
       JSON.parse(this.locationService.getLocation()).lat,
       JSON.parse(this.locationService.getLocation()).long
-    ]).addTo(this.map)
-      .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-      .openPopup();
+    ], {
+      color: '#596974',
+      fillColor: '#596974',
+      fillOpacity: 0.2,
+      radius: JSON.parse(this.locationService.getLocation()).accuracy * 10
+    }).addTo(this.map);
   }
 
   private getThoughts(): void {
@@ -95,7 +92,7 @@ export class AppComponent implements OnInit {
             JSON.parse(this.locationService.getLocation()).lat,
             JSON.parse(this.locationService.getLocation()).long
           ]).addTo(this.map)
-            .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+            .bindPopup(t.thought)
             .openPopup();
         });
 
@@ -117,8 +114,7 @@ export class AppComponent implements OnInit {
   private handleError(err: PositionError): void {
     this.fetchingLocation = false;
     alert(`Error getting location, code: ${err.code}, message: ${err.message}`);
-    console.error(err.message);
-    // this.getThoughts();
+    console.error(err.message);;
   }
 
   private getLocation(): void {
