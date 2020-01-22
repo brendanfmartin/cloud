@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class ThoughtsService {
+export class ThoughtService {
 
   constructor(private http: HttpClient) { }
 

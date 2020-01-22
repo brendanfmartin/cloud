@@ -1,6 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import {Loc} from '../../models/thought';
 import {LocationService} from '../../services/location.service';
+import { ThoughtService } from '../../services/thought.service';
 
 // https://stackoverflow.com/questions/6878761/javascript-how-to-create-random-longitude-and-latitudes
 const randomLatLong = (from, to, fixed): string => {
@@ -18,7 +19,8 @@ export class NewThoughtComponent implements OnInit {
 
   thought: string;
 
-  constructor(private locationService: LocationService) { }
+  constructor(private locationService: LocationService,
+              private thoughtService: ThoughtService) { }
 
   ngOnInit() {}
 
@@ -51,12 +53,12 @@ export class NewThoughtComponent implements OnInit {
       loc: currentLoc
     };
 
-    this.locationService.addThought(newThought).subscribe(
+    this.thoughtService.addThought(newThought).subscribe(
       (res) => {
         this.newThought.emit();
         this.thought = null;
       }
-    )
+    );
 
   }
 

@@ -3,6 +3,7 @@ import {Loc, Thought} from './models/thought';
 import {circle, icon, latLng, Layer, marker, tileLayer} from 'leaflet';
 import {LocationService} from './services/location.service';
 import {Subscription} from 'rxjs';
+import { ThoughtService } from './services/thought.service';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +29,8 @@ export class AppComponent implements OnInit {
   L = window['L'];
   map: any;
 
-  constructor(private locationService: LocationService) {}
+  constructor(private locationService: LocationService,
+              private thoughtService: ThoughtService) {}
 
   ngOnInit() {
     this.getLocation();
@@ -39,7 +41,7 @@ export class AppComponent implements OnInit {
   }
 
   clearThoughts(): void {
-    this.locationService.deleteThoughts().subscribe();
+    this.thoughtService.deleteThoughts().subscribe();
   }
 
   private buildMap(): void {
@@ -79,7 +81,7 @@ export class AppComponent implements OnInit {
     // todo - order of build map and get thoughts
     this.buildMap();
 
-    this.localThoughts$ = this.locationService.getThoughts().subscribe(
+    this.localThoughts$ = this.thoughtService.getThoughts().subscribe(
       (res) => {
         this.thoughts = res;
 
