@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Loc, Thought} from './models/thought';
-import { circle, latLng, tileLayer } from 'leaflet';
+import {Circle, circle, icon, latLng, Layer, marker, tileLayer} from 'leaflet';
 import {LocationService} from './services/location.service';
 import {Subscription} from 'rxjs';
 
@@ -25,10 +25,9 @@ export class AppComponent implements OnInit {
 
   layersControl: any;
 
-  L: any = window['L'];
-
-  showLayer = true;
   layers = [];
+  myLayer: any[];
+  markers: Layer[] = [];
 
   fetchingLocation: boolean;
 
@@ -65,12 +64,21 @@ export class AppComponent implements OnInit {
       )
     };
 
-    // this.layers.push(
-    //   circle([
-    //     JSON.parse(this.locationService.getLocation()).lat,
-    //     JSON.parse(this.locationService.getLocation()).long
-    //   ], { radius: 10 })
-    // );
+    this.myLayer = [
+      circle([
+        JSON.parse(this.locationService.getLocation()).lat,
+        JSON.parse(this.locationService.getLocation()).long
+      ], { radius: 50 })
+      // marker([ JSON.parse(this.locationService.getLocation()).lat,
+      //     JSON.parse(this.locationService.getLocation()).long ], {
+      //   icon: icon({
+      //     iconSize: [25, 41],
+      //     iconAnchor: [13, 41],
+      //     iconUrl: 'assets/marker-icon.png',
+      //     shadowUrl: 'assets/marker-shadow.png'
+      //   })
+      // }).bindPopup('hello')
+    ];
 
   }
 
@@ -82,29 +90,36 @@ export class AppComponent implements OnInit {
 
     this.localThoughts$ = this.locationService.getThoughts().subscribe(
       (res) => {
-        console.log(res);
-        try {
-          this.thoughts = JSON.parse(res);
-          if (!this.thoughts) {
-            this.thoughts = [];
-          }
-        } catch (e) {
-          console.error(e);
-          this.thoughts = res;
-        }
+        this.thoughts = res;
 
-        console.log(this.thoughts);
         if (this.thoughts.length === 0) {
           return;
         }
+
+        this.thoughts.map((t: Thought) => {
+          this.layers.push(
+            marker([
+                t.loc.lat as any,
+                t.loc.long as any
+              ],
+              {
+              icon: icon({
+                iconSize: [25, 41],
+                iconAnchor: [13, 41],
+                iconUrl: 'assets/marker-icon.png',
+                shadowUrl: 'assets/marker-shadow.png'
+              })
+            }).bindPopup('hello').openPopup()
+          );
+        });
+
         this.thoughts.map((t: Thought) => this.layers.push(
-          circle([
-            t.loc.lat as any,
-            t.loc.long as any
-          ], { radius: 100 })
+          // circle([
+          //   t.loc.lat as any,
+          //   t.loc.long as any
+          // ], { radius: 100 })
         ));
 
-        console.log(this.layers);
       }
     );
   }

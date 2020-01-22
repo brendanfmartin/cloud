@@ -13,7 +13,9 @@
        leaflet
        [leafletOptions]="options"
        [leafletLayersControl]="layersControl">
-    <div *ngIf="showLayer" [leafletLayers]="layers"></div>
+    <div *ngIf="myLayer" [leafletLayers]="myLayer"></div>
+    <div *ngIf="layers.length" [leafletLayers]="layers"></div>
+    <div [leafletLayers]="markers"></div>
   </div>
 
   <section class="footer" style="position: fixed; bottom: 0; height: 100px; z-index: 99999">
