@@ -41,7 +41,8 @@ export class NewThoughtComponent implements OnInit {
     } else {
       currentLoc = {
         lat: randomLatLong(-180, 180, 3),
-        long: randomLatLong(-180, 180, 3)
+        long: randomLatLong(-180, 180, 3),
+        accuracy: 0
       };
     }
 
@@ -49,8 +50,7 @@ export class NewThoughtComponent implements OnInit {
       thought: this.thought,
       loc: currentLoc
     };
-    // thoughts.push(newThought);
-    // localStorage.setItem('thoughts', JSON.stringify(thoughts));
+
     this.locationService.addThought(newThought).subscribe(
       (res) => {
         this.newThought.emit();

@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
 
   // tslint:disable-next-line:variable-name
   private readonly access_token = 'pk.eyJ1IjoiYnJlbmRhbmZtYXJ0aW4iLCJhIjoiY2s1M2JnbTV5MDZ0djNrcGh0cXN0d2Y2bSJ9.4JYMZDKVqdJS0dJA0USyJw';
-  private readonly url = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/1/1/0?access_token=${this.access_token}`;
+  private readonly url = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}';
   // tslint:disable-next-line:max-line-length
   private readonly attribution = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>';
 
@@ -50,10 +50,10 @@ export class AppComponent implements OnInit {
 
     this.options = {
       layers: [
-        tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        tileLayer(this.url, {
           attribution: this.attribution,
           maxZoom: 20,
-          id: 'mapbox/streets-v11',
+          id: 'mapbox/dark-v10',
           accessToken: this.access_token
         })
       ],
@@ -68,7 +68,7 @@ export class AppComponent implements OnInit {
       circle([
         JSON.parse(this.locationService.getLocation()).lat,
         JSON.parse(this.locationService.getLocation()).long
-      ], { radius: 50 })
+      ], { radius: JSON.parse(this.locationService.getLocation()).accuracy })
     ];
 
   }
@@ -100,7 +100,7 @@ export class AppComponent implements OnInit {
                 iconUrl: 'assets/marker-icon.png',
                 shadowUrl: 'assets/marker-shadow.png'
               })
-            }).bindPopup(t.thought).openPopup()
+            }).bindPopup(t.thought)
           );
         });
 
@@ -135,7 +135,7 @@ export class AppComponent implements OnInit {
     } else {
       this.fetchingLocation = true;
       const options = {
-        enableHighAccuracy: false,
+        enableHighAccuracy: true,
         maximumAge: 10000,
         timeout: 10000
       };

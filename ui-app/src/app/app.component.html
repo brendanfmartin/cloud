@@ -11,8 +11,7 @@
 
   <div *ngIf="options" style="height: 100%"
        leaflet
-       [leafletOptions]="options"
-       [leafletLayersControl]="layersControl">
+       [leafletOptions]="options">
     <div *ngIf="myLayer" [leafletLayers]="myLayer"></div>
     <div *ngIf="layers.length" [leafletLayers]="layers"></div>
     <div [leafletLayers]="markers"></div>
