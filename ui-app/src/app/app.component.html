@@ -13,7 +13,7 @@
        leaflet
        [leafletOptions]="options"
        [leafletLayersControl]="layersControl">
-    <div *ngIf="showLayer" [leafletLayer]="layer"></div>
+    <div *ngIf="showLayer" [leafletLayers]="layers"></div>
   </div>
 
   <section class="footer" style="position: fixed; bottom: 0; height: 100px; z-index: 99999">

@@ -9,7 +9,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
 
-let thoughts = {};
+let thoughts = [];
 
 io.on('connection', socket => {
   let previousId;
@@ -52,19 +52,19 @@ app.get('/thoughts', (req, res) => {
   res.send(thoughts).end();
 });
 
-app.post('/post-test', (req, res) => {
-  console.log('Got body:', req.body);
-  res.sendStatus(200);
+app.get('/thought/:id', (req, res) => {
+  // const id = uuidv4();
+  // thoughts.push(id, ...req.body);
+  // res.json({message: 'accepted', thoughts}).end();
 });
 
 app.post('/thought', (req, res) => {
-  console.log(req);
-  const thoughtId = uuidv4();
-  thoughts[thoughtId] = req.body;
+  const id = uuidv4();
+  thoughts.push({id, ...req.body});
   res.json({message: 'accepted', thoughts}).end();
 });
 
 app.delete('/thoughts', (req, res) => {
-  thoughts = {};
+  thoughts = [];
   res.json({message: 'deleted', thoughts}).end();
 });

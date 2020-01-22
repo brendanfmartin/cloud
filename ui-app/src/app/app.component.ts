@@ -25,13 +25,10 @@ export class AppComponent implements OnInit {
 
   layersControl: any;
 
-  mapContainer: any;
-  mymap: any;
-
   L: any = window['L'];
 
   showLayer = true;
-  layer;
+  layers = [];
 
   fetchingLocation: boolean;
 
@@ -46,26 +43,11 @@ export class AppComponent implements OnInit {
   }
 
   clearThoughts(): void {
-    // localStorage.setItem('thoughts', undefined);
-    this.getThoughts();
+    this.locationService.deleteThoughts().subscribe();
   }
 
   private buildMap(): void {
-
-    // const lat = JSON.parse(localStorage.getItem('current_location')).lat;
-    // const long = JSON.parse(localStorage.getItem('current_location')).long;
-    //
-    // if (!this.mapContainer) {
-    //   this.mymap = this.L.map('mapid').setView([lat, long], 13);
-    //   this.mapContainer = this.L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
-    //     attribution: this.attribution,
-    //     maxZoom: 20,
-    //     id: 'mapbox/streets-v11',
-    //     accessToken: this.access_token
-    //   }).addTo(this.mymap);
-    // }
-    //
-    // this.L.marker([lat, long]).addTo(this.mymap);
+    // todo - dont build if built
 
     this.options = {
       layers: [
@@ -83,31 +65,12 @@ export class AppComponent implements OnInit {
       )
     };
 
-    this.layer = circle([
-      JSON.parse(this.locationService.getLocation()).lat,
-      JSON.parse(this.locationService.getLocation()).long
-    ], { radius: 100 });
-
-
-    // this.options = {
-    //   layers: [
-    //     tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
-    //   ],
-    //   zoom: 5,
-    //   center: latLng(46.879966, -121.726909)
-    // };
-    //
-    // this.layersControl = {
-    //   baseLayers: {
-    //     'Open Street Map': tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' }),
-    //     'Open Cycle Map': tileLayer('http://{s}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '...' })
-    //   },
-    //   overlays: {
-    //     'Big Circle': circle([ 46.95, -122 ], { radius: 5000 }),
-    //     'Big Square': polygon([[ 46.8, -121.55 ], [ 46.9, -121.55 ], [ 46.9, -121.7 ], [ 46.8, -121.7 ]])
-    //   }
-    // };
-
+    // this.layers.push(
+    //   circle([
+    //     JSON.parse(this.locationService.getLocation()).lat,
+    //     JSON.parse(this.locationService.getLocation()).long
+    //   ], { radius: 10 })
+    // );
 
   }
 
@@ -119,42 +82,54 @@ export class AppComponent implements OnInit {
 
     this.localThoughts$ = this.locationService.getThoughts().subscribe(
       (res) => {
-        // console.log(res);
+        console.log(res);
         try {
           this.thoughts = JSON.parse(res);
           if (!this.thoughts) {
             this.thoughts = [];
           }
         } catch (e) {
-          this.thoughts = [];
+          console.error(e);
+          this.thoughts = res;
         }
 
-        this.thoughts.map((t: Thought) => {
-          // const marker = this.L.marker([t.loc.lat, t.loc.long]).addTo(this.mymap);
-          // marker.bindPopup(t.thought).openPopup();
-        });
+        console.log(this.thoughts);
+        if (this.thoughts.length === 0) {
+          return;
+        }
+        this.thoughts.map((t: Thought) => this.layers.push(
+          circle([
+            t.loc.lat as any,
+            t.loc.long as any
+          ], { radius: 100 })
+        ));
+
+        console.log(this.layers);
       }
     );
   }
 
   private handleLocation(position: Position): void {
     this.fetchingLocation = false;
-    this.loc = {long: position.coords.longitude.toString(), lat: position.coords.latitude.toString()};
+    this.loc = {lat: position.coords.latitude.toString(), long: position.coords.longitude.toString()};
     this.locationService.setLocation(this.loc);
     this.getThoughts();
   }
 
   private handleError(err: PositionError): void {
     this.fetchingLocation = false;
+    this.loc = {lat: '75.1652', long: '39.9526'};
+    this.locationService.setLocation(this.loc);
     alert(`Error getting location, code: ${err.code}, message: ${err.message}`);
     console.error(err.message);
+    this.getThoughts();
   }
 
   private getLocation(): void {
     // get from cache if in cache
 
     if (this.locationService.getLocation()) {
-      console.log('getting stored location', this.locationService.getLocation())
+      console.log('getting stored location', this.locationService.getLocation());
       this.getThoughts();
     } else {
       this.fetchingLocation = true;
