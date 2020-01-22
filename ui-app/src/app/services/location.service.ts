@@ -10,6 +10,16 @@ export class LocationService {
 
   constructor(private http: HttpClient) { }
 
+  static accuracyConversion(accuracy: number): number {
+    if (accuracy < 100) {
+      return 100;
+    }
+    if (accuracy > 1000) {
+      return 1000;
+    }
+    return accuracy;
+  }s
+
   getLocation(): string {
     return localStorage.getItem('current_location');
   }
@@ -25,6 +35,9 @@ export class LocationService {
   }
 
   addThought(thought: Thought): Observable<any> {
+    thought.loc.lat = (parseFloat(thought.loc.lat) + Math.random() / 100).toString();
+    thought.loc.long = (parseFloat(thought.loc.long) + Math.random() / 100).toString();
+
     // todo - add this to localstorage and map
     return this.http.post('http://localhost:3000/thought', thought, {headers: {'content-type': 'application/json'}});
   }

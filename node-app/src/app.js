@@ -11,6 +11,21 @@ app.use(cors());
 
 let thoughts = [];
 
+/**
+ *  IF WE STORE THE COORDINATES OF THE THOUGHTS
+ *
+ *
+ *  AND WE STORE THE COORDINATES OF THE VIEWPORTS
+ *
+ *
+ *  CAN WE QUICKLY SEND TO THE SOCKETS
+ *
+ *
+ *  WHERE THE SOCKET JOINED ROOM IS THE BINARY OF THE COORDS?
+ */
+
+
+
 io.on('connection', socket => {
   let previousId;
   const safeJoin = currentId => {

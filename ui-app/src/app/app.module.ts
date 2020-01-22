@@ -9,8 +9,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatInputModule, MatSliderModule } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
-import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-import {HttpClientModule} from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 
@@ -35,9 +34,6 @@ const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 
     // socket
     SocketIoModule.forRoot(config),
-
-    // maps
-    LeafletModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]
