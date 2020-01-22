@@ -68,7 +68,7 @@ export class AppComponent implements OnInit {
       color: '#596974',
       fillColor: '#596974',
       fillOpacity: 0.2,
-      radius: JSON.parse(this.locationService.getLocation()).accuracy * 10
+      radius: JSON.parse(this.locationService.getLocation()).accuracy
     }).addTo(this.map);
   }
 
@@ -102,10 +102,11 @@ export class AppComponent implements OnInit {
 
   private handleLocation(position: Position): void {
     this.fetchingLocation = false;
+    console.log(position.coords)
     this.loc = {
       lat: position.coords.latitude.toString(),
       long: position.coords.longitude.toString(),
-      accuracy: position.coords.accuracy
+      accuracy: LocationService.accuracyConversion(position.coords.accuracy)
     };
     this.locationService.setLocation(this.loc);
     this.getThoughts();
@@ -114,7 +115,7 @@ export class AppComponent implements OnInit {
   private handleError(err: PositionError): void {
     this.fetchingLocation = false;
     alert(`Error getting location, code: ${err.code}, message: ${err.message}`);
-    console.error(err.message);;
+    console.error(err.message);
   }
 
   private getLocation(): void {

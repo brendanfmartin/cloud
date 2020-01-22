@@ -10,6 +10,16 @@ export class LocationService {
 
   constructor(private http: HttpClient) { }
 
+  static accuracyConversion(accuracy: number): number {
+    if (accuracy < 100) {
+      return 100;
+    }
+    if (accuracy > 1000) {
+      return 1000;
+    }
+    return accuracy;
+  }s
+
   getLocation(): string {
     return localStorage.getItem('current_location');
   }
