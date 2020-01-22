@@ -89,8 +89,8 @@ export class AppComponent implements OnInit {
 
         this.thoughts.map((t: Thought) => {
           this.L.marker([
-            JSON.parse(this.locationService.getLocation()).lat,
-            JSON.parse(this.locationService.getLocation()).long
+            t.loc.lat,
+            t.loc.long
           ]).addTo(this.map)
             .bindPopup(t.thought)
             .openPopup();
