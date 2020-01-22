@@ -6,4 +6,5 @@ export interface Thought {
 export interface Loc {
   lat: string;
   long: string;
+  accuracy: number;
 }

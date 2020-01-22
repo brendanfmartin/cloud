@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Loc, Thought} from './models/thought';
-import {Circle, circle, icon, latLng, Layer, marker, tileLayer} from 'leaflet';
+import {circle, icon, latLng, Layer, marker, tileLayer} from 'leaflet';
 import {LocationService} from './services/location.service';
 import {Subscription} from 'rxjs';
 
@@ -69,15 +69,6 @@ export class AppComponent implements OnInit {
         JSON.parse(this.locationService.getLocation()).lat,
         JSON.parse(this.locationService.getLocation()).long
       ], { radius: 50 })
-      // marker([ JSON.parse(this.locationService.getLocation()).lat,
-      //     JSON.parse(this.locationService.getLocation()).long ], {
-      //   icon: icon({
-      //     iconSize: [25, 41],
-      //     iconAnchor: [13, 41],
-      //     iconUrl: 'assets/marker-icon.png',
-      //     shadowUrl: 'assets/marker-shadow.png'
-      //   })
-      // }).bindPopup('hello')
     ];
 
   }
@@ -109,16 +100,9 @@ export class AppComponent implements OnInit {
                 iconUrl: 'assets/marker-icon.png',
                 shadowUrl: 'assets/marker-shadow.png'
               })
-            }).bindPopup('hello').openPopup()
+            }).bindPopup(t.thought).openPopup()
           );
         });
-
-        this.thoughts.map((t: Thought) => this.layers.push(
-          // circle([
-          //   t.loc.lat as any,
-          //   t.loc.long as any
-          // ], { radius: 100 })
-        ));
 
       }
     );
@@ -126,18 +110,20 @@ export class AppComponent implements OnInit {
 
   private handleLocation(position: Position): void {
     this.fetchingLocation = false;
-    this.loc = {lat: position.coords.latitude.toString(), long: position.coords.longitude.toString()};
+    this.loc = {
+      lat: position.coords.latitude.toString(),
+      long: position.coords.longitude.toString(),
+      accuracy: position.coords.accuracy
+    };
     this.locationService.setLocation(this.loc);
     this.getThoughts();
   }
 
   private handleError(err: PositionError): void {
     this.fetchingLocation = false;
-    this.loc = {lat: '75.1652', long: '39.9526'};
-    this.locationService.setLocation(this.loc);
     alert(`Error getting location, code: ${err.code}, message: ${err.message}`);
     console.error(err.message);
-    this.getThoughts();
+    // this.getThoughts();
   }
 
   private getLocation(): void {
