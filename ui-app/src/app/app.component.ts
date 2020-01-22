@@ -100,47 +100,8 @@ export class AppComponent implements OnInit {
     );
   }
 
-  private handleLocation(position: Position): void {
-    this.fetchingLocation = false;
-    console.log(position.coords)
-    this.loc = {
-      lat: position.coords.latitude.toString(),
-      long: position.coords.longitude.toString(),
-      accuracy: LocationService.accuracyConversion(position.coords.accuracy)
-    };
-    this.locationService.setLocation(this.loc);
-    this.getThoughts();
-  }
-
-  private handleError(err: PositionError): void {
-    this.fetchingLocation = false;
-    alert(`Error getting location, code: ${err.code}, message: ${err.message}`);
-    console.error(err.message);
-  }
-
   private getLocation(): void {
-    // get from cache if in cache
-
-    if (this.locationService.getLocation()) {
-      console.log('getting stored location', this.locationService.getLocation());
-      this.getThoughts();
-    } else {
-      this.fetchingLocation = true;
-      const options = {
-        enableHighAccuracy: true,
-        maximumAge: 10000,
-        timeout: 10000
-      };
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position: Position) => this.handleLocation(position),
-          (err: PositionError) => this.handleError(err),
-          options
-        );
-      } else {
-        alert('Geolocation is not supported by this browser.');
-      }
-    }
+    // todo - watch location
+    this.fetchingLocation = true;
   }
 }

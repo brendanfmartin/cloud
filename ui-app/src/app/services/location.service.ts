@@ -8,6 +8,8 @@ import {Observable} from 'rxjs';
 })
 export class LocationService {
 
+  private readonly locationKey = 'current_location';
+
   constructor(private http: HttpClient) { }
 
   static accuracyConversion(accuracy: number): number {
@@ -18,31 +20,47 @@ export class LocationService {
       return 1000;
     }
     return accuracy;
-  }s
+  }
 
   getLocation(): string {
-    return localStorage.getItem('current_location');
+    if (localStorage.getItem(this.locationKey)) {
+      return localStorage.getItem(this.locationKey);
+    } else {
+      const options = {
+        enableHighAccuracy: true,
+        maximumAge: 10000,
+        timeout: 10000
+      };
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position: Position) => this.handleLocation(position),
+          (err: PositionError) => this.handleError(err),
+          options
+        );
+      } else {
+        alert('Geolocation is not supported by this browser.');
+      }
+    }
   }
 
   setLocation(loc: Loc): void {
-    localStorage.setItem('current_location', JSON.stringify(loc));
+    localStorage.setItem(this.locationKey, JSON.stringify(loc));
   }
 
-  getThoughts(): Observable<any> {
-    return this.http.get('http://localhost:3000/thoughts');
-    // localStorage.getItem('thoughts');
-    // return {'123a': {thought: 'hi', loc: {lat: '1', long: '1'}} as Thought};
+  private handleLocation(position: Position): void {
+    console.log('string location');
+    console.log(position.coords);
+    const loc = {
+      lat: position.coords.latitude.toString(),
+      long: position.coords.longitude.toString(),
+      accuracy: LocationService.accuracyConversion(position.coords.accuracy)
+    };
+    this.setLocation(loc);
   }
 
-  addThought(thought: Thought): Observable<any> {
-    thought.loc.lat = (parseFloat(thought.loc.lat) + Math.random() / 100).toString();
-    thought.loc.long = (parseFloat(thought.loc.long) + Math.random() / 100).toString();
-
-    // todo - add this to localstorage and map
-    return this.http.post('http://localhost:3000/thought', thought, {headers: {'content-type': 'application/json'}});
-  }
-
-  deleteThoughts(): Observable<any> {
-    return this.http.delete('http://localhost:3000/thoughts', {headers: {'content-type': 'application/json'}});
+  private handleError(err: PositionError): void {
+    alert(`Error getting location, code: ${err.code}, message: ${err.message}`);
+    console.error(err.message);
   }
 }
