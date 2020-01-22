@@ -2,20 +2,15 @@
   <h1>fetching location</h1>
 </ng-container>
 
-<ng-container *ngIf="!fetchingLocation">
+<ng-container>
   <section class="header" style="position: fixed; top: 0; height: 20px; z-index: 99999">
     <button (click)="clearThoughts()">Clear my head</button>
   </section>
 
-  <!--<div id="mapid"></div>-->
-
-  <div *ngIf="options" style="height: 100%"
-       leaflet
-       [leafletOptions]="options">
-    <div *ngIf="myLayer" [leafletLayers]="myLayer"></div>
-    <div *ngIf="layers.length" [leafletLayers]="layers"></div>
-    <div [leafletLayers]="markers"></div>
-  </div>
+  <div id="mapid" style="height: 100%;
+    position: absolute;
+    width: 100%;
+    top: 0;"></div>
 
   <section class="footer" style="position: fixed; bottom: 0; height: 100px; z-index: 99999">
     <app-new-thought (newThought)="newThought()"></app-new-thought>

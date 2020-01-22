@@ -31,6 +31,9 @@ export class AppComponent implements OnInit {
 
   fetchingLocation: boolean;
 
+  L = window['L'];
+  map: any;
+
   constructor(private locationService: LocationService) {}
 
   ngOnInit() {
@@ -46,34 +49,34 @@ export class AppComponent implements OnInit {
   }
 
   private buildMap(): void {
+
+    if (this.map) {
+      return;
+    }
+
     // todo - dont build if built
+    this.map = this.L.map('mapid').setView([
+      JSON.parse(this.locationService.getLocation()).lat,
+      JSON.parse(this.locationService.getLocation()).long
+    ], 13);
 
-    this.options = {
-      layers: [
-        tileLayer(this.url, {
-          attribution: this.attribution,
-          maxZoom: 20,
-          id: 'mapbox/dark-v10',
-          accessToken: this.access_token
-        })
-      ],
-      zoom: 16,
-      center: latLng(
-        JSON.parse(this.locationService.getLocation()).lat,
-        JSON.parse(this.locationService.getLocation()).long
-      )
-    };
+    this.L.tileLayer(this.url, {
+      attribution: this.attribution,
+      maxZoom: 20,
+      id: 'mapbox/dark-v10',
+      accessToken: this.access_token
+    }).addTo(this.map);
 
-    this.myLayer = [
-      circle([
-        JSON.parse(this.locationService.getLocation()).lat,
-        JSON.parse(this.locationService.getLocation()).long
-      ], { radius: JSON.parse(this.locationService.getLocation()).accuracy })
-    ];
-
+    this.L.marker([
+      JSON.parse(this.locationService.getLocation()).lat,
+      JSON.parse(this.locationService.getLocation()).long
+    ]).addTo(this.map)
+      .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+      .openPopup();
   }
 
   private getThoughts(): void {
+
     console.log('getting thoughts');
 
     // todo - order of build map and get thoughts
@@ -88,20 +91,12 @@ export class AppComponent implements OnInit {
         }
 
         this.thoughts.map((t: Thought) => {
-          this.layers.push(
-            marker([
-                t.loc.lat as any,
-                t.loc.long as any
-              ],
-              {
-              icon: icon({
-                iconSize: [25, 41],
-                iconAnchor: [13, 41],
-                iconUrl: 'assets/marker-icon.png',
-                shadowUrl: 'assets/marker-shadow.png'
-              })
-            }).bindPopup(t.thought)
-          );
+          this.L.marker([
+            JSON.parse(this.locationService.getLocation()).lat,
+            JSON.parse(this.locationService.getLocation()).long
+          ]).addTo(this.map)
+            .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+            .openPopup();
         });
 
       }
