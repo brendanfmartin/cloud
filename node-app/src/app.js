@@ -5,6 +5,29 @@ const uuidv4 = require('uuid/v4');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
+/**
+ * AMAZON STUFF
+ */
+
+const AWS = require('aws-sdk');
+
+AWS.config.update({ region: 'us-east-1' });
+
+const ddb = new AWS.DynamoDB();
+const ddbGeo = require('dynamodb-geo');
+
+const dbname = 'wheresStarbucks';
+
+const config = new ddbGeo.GeoDataManagerConfiguration(ddb, dbname);
+config.hashKeyLength = 5;
+
+const myGeoTableManager = new ddbGeo.GeoDataManager(config);
+
+/**
+ * END AMAZON STUFF
+ */
+
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
@@ -23,6 +46,7 @@ let thoughts = [];
  *
  *  WHERE THE SOCKET JOINED ROOM IS THE BINARY OF THE COORDS?
  */
+
 
 
 
@@ -85,22 +109,6 @@ app.delete('/thoughts', (req, res) => {
 });
 
 app.post('/coffee', (req, res) => {
-  console.log(req.body);
-
-  const AWS = require('aws-sdk');
-
-  AWS.config.update({ region: 'us-east-1' });
-
-  const ddb = new AWS.DynamoDB();
-  const ddbGeo = require('dynamodb-geo');
-
-  const dbname = 'wheresStarbucks';
-
-  const config = new ddbGeo.GeoDataManagerConfiguration(ddb, dbname);
-  config.hashKeyLength = 5;
-
-  const myGeoTableManager = new ddbGeo.GeoDataManager(config);
-
   myGeoTableManager.queryRadius({
     RadiusInMeter: req.body.radius || 10000,
     CenterPoint: {
@@ -109,4 +117,33 @@ app.post('/coffee', (req, res) => {
     },
   })
     .then((locations) => res.json(locations).end());
+});
+
+app.post('/thought/dynamo', (req, res) => {
+  console.log(req.body);
+
+  const b = req.body;
+
+  const input = [{
+    RangeKeyValue: { S: uuidv4() },
+    GeoPoint: {
+      latitude: b.position.coords.latitude,
+      longitude: b.position.coords.longitude
+    },
+    PutItemInput: {
+      Item: {
+        thought: { S: b.thought },
+        position: { M: b.position },
+      },
+    }
+  }];
+
+  myGeoTableManager.batchWritePoints(input)
+    .promise()
+    .then((res) => console.log(res))
+    .then(() => res.json({ok: 'ok'}).end())
+    .catch((error) => {
+      console.error(error);
+      res.status(500).json({error: 'error inserting'}).end()
+    })
 });

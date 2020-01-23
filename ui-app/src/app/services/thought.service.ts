@@ -26,6 +26,10 @@ export class ThoughtService {
     return this.http.post('http://localhost:3000/thought', thought, { headers: { 'content-type': 'application/json' } });
   }
 
+  addThougghtDynamo(thought: string, position: Position): Observable<any> {
+    return this.http.post('http://localhost:3000/thought/dynamo', {thought, position}, { headers: { 'content-type': 'application/json' } });
+  }
+
   deleteThoughts(): Observable<any> {
     return this.http.delete('http://localhost:3000/thoughts', { headers: { 'content-type': 'application/json' } });
   }
