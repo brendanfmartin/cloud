@@ -4,6 +4,7 @@ const io = require('socket.io')(http);
 const uuidv4 = require('uuid/v4');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const requestIp = require('request-ip');
 
 /**
  * AMAZON STUFF
@@ -31,6 +32,7 @@ const myGeoTableManager = new ddbGeo.GeoDataManager(config);
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
+app.use(requestIp.mw());
 
 let thoughts = [];
 
@@ -88,6 +90,8 @@ http.listen(port, () => {
 
 
 app.get('/thoughts', (req, res) => {
+  const ip = req.clientIp;
+  console.log(ip);
   res.send(thoughts).end();
 });
 
