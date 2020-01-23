@@ -24,7 +24,6 @@ npm start
 ### UI
 [MDN Geoposition](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition)
 
-
 ```json
 {
   "coords": {
@@ -50,4 +49,39 @@ myGeoTableManager.queryRadius({
     longitude: -73.9822532,
   },
 });
+```
+
+Starbucks Sample Data
+```javascript
+  const data = [
+     {
+       "position": {
+         "lat": 61.21759217,
+         "lng": -149.8935557
+       },
+       "name": "Starbucks - AK - Anchorage  00001",
+       "address": "601 West Street_601 West 5th Avenue_Anchorage, Alaska 99501",
+       "phone": "907-277-2477"
+     }
+  ];
+```
+
+Starbuck Sample Load
+```javascript
+  const putPointInputs = data.map((location) => ({
+    RangeKeyValue: { S: uuid.v4() }, // Use this to ensure uniqueness of the hash/range pairs.
+    GeoPoint: {
+      latitude: location.position.lat,
+      longitude: location.position.lng,
+    },
+    PutItemInput: {
+      Item: {
+        name: { S: location.name }, // Specify attribute values using { type: value } objects, like the DynamoDB API.
+        address: { S: location.address },
+      },
+    },
+  }));
+
+
+  myGeoTableManager.batchWritePoints(putPointInputs).promise()
 ```
