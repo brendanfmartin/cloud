@@ -9,7 +9,7 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
-    "@types/socket.io": "^2.1.0",
+    "@types/socket.io": "^2.1.4",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.16.4",
