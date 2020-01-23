@@ -40,7 +40,7 @@ export class AppComponent implements OnInit {
   }
 
   newThought(): void {
-    // this.getThoughts();
+    this.getThoughts();
   }
 
   clearThoughts(): void {
@@ -103,20 +103,20 @@ export class AppComponent implements OnInit {
       },
     );
 
-    this.thoughtService.findCoffee(this.position, 100000).subscribe(
-      (coffee: object[]) => {
-        coffee.map((c: any) => {
-          const coordinates = JSON.parse(c.geoJson['S']).coordinates;
-          console.log(coordinates);
-          this.L.marker([
-            coordinates[1],
-            coordinates[0]
-          ]).addTo(this.map)
-            .bindPopup(c.coffee)
-        });
-      },
-      (rej) => console.error(rej),
-    );
+    // this.thoughtService.findCoffee(this.position, 100000).subscribe(
+    //   (coffee: object[]) => {
+    //     coffee.map((c: any) => {
+    //       const coordinates = JSON.parse(c.geoJson['S']).coordinates;
+    //       console.log(coordinates);
+    //       this.L.marker([
+    //         coordinates[1],
+    //         coordinates[0]
+    //       ]).addTo(this.map)
+    //         .bindPopup(c.coffee)
+    //     });
+    //   },
+    //   (rej) => console.error(rej),
+    // );
   }
 
   private getLocation(): void {
