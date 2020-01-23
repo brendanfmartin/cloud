@@ -102,7 +102,7 @@ app.post('/coffee', (req, res) => {
   const myGeoTableManager = new ddbGeo.GeoDataManager(config);
 
   myGeoTableManager.queryRadius({
-    RadiusInMeter: 10000,
+    RadiusInMeter: req.body.radius || 10000,
     CenterPoint: {
       latitude: req.body.latitude,
       longitude: req.body.longitude,

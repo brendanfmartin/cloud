@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
-import { Loc, Thought } from './models/thought';
-import { LocationService } from './services/location.service';
-import { ThoughtService } from './services/thought.service';
+import {Component, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {Thought} from './models/thought';
+import {LocationService} from './services/location.service';
+import {ThoughtService} from './services/thought.service';
+import {core} from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +11,6 @@ import { ThoughtService } from './services/thought.service';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  options;
 
   // tslint:disable-next-line:variable-name
   private readonly access_token = 'pk.eyJ1IjoiYnJlbmRhbmZtYXJ0aW4iLCJhIjoiY2s1M2JnbTV5MDZ0djNrcGh0cXN0d2Y2bSJ9.4JYMZDKVqdJS0dJA0USyJw';
@@ -22,13 +22,11 @@ export class AppComponent implements OnInit {
 
   thoughts: object[] = [];
 
-  loc: Loc;
-
   localThoughts$: Subscription;
 
   fetchingLocation: boolean;
 
-  L = window.L;
+  L = window['L'];
 
   map: any;
 
@@ -105,11 +103,16 @@ export class AppComponent implements OnInit {
       },
     );
 
-    this.thoughtService.findCoffee(this.position).subscribe(
+    this.thoughtService.findCoffee(this.position, 100000).subscribe(
       (coffee: object[]) => {
-        console.log('coffee', coffee);
-        coffee.map((c) => {
-          console.log(c);
+        coffee.map((c: any) => {
+          const coordinates = JSON.parse(c.geoJson['S']).coordinates;
+          console.log(coordinates);
+          this.L.marker([
+            coordinates[1],
+            coordinates[0]
+          ]).addTo(this.map)
+            .bindPopup(c.coffee)
         });
       },
       (rej) => console.error(rej),

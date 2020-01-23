@@ -13,9 +13,9 @@ export class ThoughtService {
     return this.http.get('http://localhost:3000/thoughts');
   }
 
-  findCoffee(position: Position): Observable<any> {
+  findCoffee(position: Position, radius?: number): Observable<any> {
     return this.http.post('http://localhost:3000/coffee',
-      { latitude: position.coords.latitude, longitude: position.coords.longitude });
+      { latitude: position.coords.latitude, longitude: position.coords.longitude, radius });
   }
 
   addThought(thought: Thought): Observable<any> {
