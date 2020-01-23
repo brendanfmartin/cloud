@@ -71,7 +71,7 @@ export class AppComponent implements OnInit {
       color: '#596974',
       fillColor: '#596974',
       fillOpacity: 0.2,
-      accuracy: LocationService.accuracyConversion(this.position.coords.accuracy)
+      radius: LocationService.accuracyConversion(this.position.coords.accuracy)
     }).addTo(this.map);
   }
 

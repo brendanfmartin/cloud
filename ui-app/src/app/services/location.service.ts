@@ -47,6 +47,7 @@ export class LocationService {
   }
 
   setLocation(position: Position): void {
+    console.log(JSON.stringify(position));
     localStorage.setItem(this.locationKey, JSON.stringify(position));
   }
 }
