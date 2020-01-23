@@ -14,7 +14,9 @@ AWS.config.update({ region: 'us-east-1' });
 const ddb = new AWS.DynamoDB();
 const ddbGeo = require('dynamodb-geo');
 
-const config = new ddbGeo.GeoDataManagerConfiguration(ddb, 'askJames-wheresStarbucks');
+const dbname = 'wheresStarbucks';
+
+const config = new ddbGeo.GeoDataManagerConfiguration(ddb, dbname);
 // Pick a hashKeyLength appropriate to your usage
 config.hashKeyLength = 5;
 
