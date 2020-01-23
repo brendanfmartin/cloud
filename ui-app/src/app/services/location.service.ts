@@ -1,4 +1,5 @@
 import {Injectable} from '@angular/core';
+import * as _ from 'lodash';
 
 @Injectable({
   providedIn: 'root'
@@ -33,7 +34,7 @@ export class LocationService {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             (position: Position) => {
-              // this.setLocation(position);
+              this.setLocation(position);
               resolve(position);
             },
             (err: PositionError) => reject(err),
@@ -47,7 +48,21 @@ export class LocationService {
   }
 
   setLocation(position: Position): void {
-    console.log(JSON.stringify(position));
-    localStorage.setItem(this.locationKey, JSON.stringify(position));
+    localStorage.setItem(this.locationKey, JSON.stringify(this.convertPositionToObject(position)));
+  }
+
+  private convertPositionToObject(position: Position): object {
+    return {
+      timestamp: position.timestamp,
+      coords: {
+        accuracy: position.coords.accuracy,
+        altitude: position.coords.altitude,
+        altitudeAccuracy: position.coords.altitudeAccuracy,
+        heading: position.coords.heading,
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        speed: position.coords.speed
+      }
+    };
   }
 }

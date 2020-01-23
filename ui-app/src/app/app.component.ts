@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
   }
 
   newThought(): void {
-    this.getThoughts();
+    // this.getThoughts();
   }
 
   clearThoughts(): void {
@@ -73,6 +73,8 @@ export class AppComponent implements OnInit {
       fillOpacity: 0.2,
       radius: LocationService.accuracyConversion(this.position.coords.accuracy)
     }).addTo(this.map);
+
+    this.getThoughts();
   }
 
   private getThoughts(): void {
@@ -101,17 +103,33 @@ export class AppComponent implements OnInit {
 
       }
     );
+
+    this.thoughtService.findCoffee(this.position).subscribe(
+      (coffee: object[]) => {
+        console.log('coffee', coffee);
+        coffee.map(c => {
+          console.log(c);
+        })
+      },
+      (rej) => console.error(rej)
+    );
+
   }
 
   private getLocation(): void {
-    // this.fetchingLocation = true;
+    this.fetchingLocation = true;
     console.log('getting location')
     this.locationService.getLocation()
       .then((position: Position) => {
-        console.log('getting position', position)
+        console.log('getting position', position);
         this.position = position;
+        this.fetchingLocation = false;
         this.buildMap();
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        alert('Failed to retrieve location in a timely manner.');
+        console.error(err);
+        this.fetchingLocation = false;
+      });
   }
 }

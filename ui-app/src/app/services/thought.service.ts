@@ -12,8 +12,11 @@ export class ThoughtService {
 
   getThoughts(): Observable<any> {
     return this.http.get('http://localhost:3000/thoughts');
-    // localStorage.getItem('thoughts');
-    // return {'123a': {thought: 'hi', loc: {lat: '1', long: '1'}} as Thought};
+  }
+
+  findCoffee(position: Position): Observable<any> {
+    return this.http.post('http://localhost:3000/coffee',
+      {latitude: position.coords.latitude, longitude: position.coords.longitude});
   }
 
   addThought(thought: Thought): Observable<any> {
