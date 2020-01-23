@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Loc, Thought} from './models/thought';
-import {circle, icon, latLng, Layer, marker, tileLayer} from 'leaflet';
 import {LocationService} from './services/location.service';
 import {Subscription} from 'rxjs';
-import { ThoughtService } from './services/thought.service';
+import {ThoughtService} from './services/thought.service';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +28,8 @@ export class AppComponent implements OnInit {
   L = window['L'];
   map: any;
 
+  position: Position;
+
   constructor(private locationService: LocationService,
               private thoughtService: ThoughtService) {}
 
@@ -52,8 +53,8 @@ export class AppComponent implements OnInit {
 
     // todo - dont build if built
     this.map = this.L.map('mapid').setView([
-      JSON.parse(this.locationService.getLocation()).lat,
-      JSON.parse(this.locationService.getLocation()).long
+      this.position.coords.latitude,
+      this.position.coords.longitude
     ], 15);
 
     this.L.tileLayer(this.url, {
@@ -64,13 +65,13 @@ export class AppComponent implements OnInit {
     }).addTo(this.map);
 
     this.L.circle([
-      JSON.parse(this.locationService.getLocation()).lat,
-      JSON.parse(this.locationService.getLocation()).long
+      this.position.coords.latitude,
+      this.position.coords.longitude
     ], {
       color: '#596974',
       fillColor: '#596974',
       fillOpacity: 0.2,
-      radius: JSON.parse(this.locationService.getLocation()).accuracy
+      accuracy: LocationService.accuracyConversion(this.position.coords.accuracy)
     }).addTo(this.map);
   }
 
@@ -103,7 +104,14 @@ export class AppComponent implements OnInit {
   }
 
   private getLocation(): void {
-    // todo - watch location
-    this.fetchingLocation = true;
+    // this.fetchingLocation = true;
+    console.log('getting location')
+    this.locationService.getLocation()
+      .then((position: Position) => {
+        console.log('getting position', position)
+        this.position = position;
+        this.buildMap();
+      })
+      .catch((err) => console.error(err));
   }
 }

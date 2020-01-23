@@ -17,7 +17,6 @@ const ddbGeo = require('dynamodb-geo');
 const dbname = 'wheresStarbucks';
 
 const config = new ddbGeo.GeoDataManagerConfiguration(ddb, dbname);
-// Pick a hashKeyLength appropriate to your usage
 config.hashKeyLength = 5;
 
 const myGeoTableManager = new ddbGeo.GeoDataManager(config);

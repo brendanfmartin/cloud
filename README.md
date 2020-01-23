@@ -17,3 +17,26 @@ Runs on [http://localhost:4200]
 cd ui-app
 npm start
 ```
+
+
+## Contracts
+
+### UI
+[MDN Geoposition](https://developer.mozilla.org/en-US/docs/Web/API/GeolocationPosition)
+
+
+```json
+{
+  "coords": {
+    "latitude": double,
+    "longitude": double
+    "altitude": double | null
+     accuracy: double in meters
+     altitudeAccuracy: double in meters
+     heading: double, degrees, 0 = north
+     speed: double, velocity m/s
+  },
+  "timestamp": DOMTimeStamp, milliseconds
+}
+```
+
