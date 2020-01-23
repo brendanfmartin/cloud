@@ -1,11 +1,10 @@
-import {Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import * as _ from 'lodash';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LocationService {
-
   private readonly locationKey = 'current_location';
 
   constructor() { }
@@ -28,7 +27,7 @@ export class LocationService {
         const options = {
           enableHighAccuracy: true,
           maximumAge: 10000,
-          timeout: 10000
+          timeout: 10000,
         };
 
         if (navigator.geolocation) {
@@ -38,7 +37,7 @@ export class LocationService {
               resolve(position);
             },
             (err: PositionError) => reject(err),
-            options
+            options,
           );
         } else {
           reject();
@@ -61,8 +60,8 @@ export class LocationService {
         heading: position.coords.heading,
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
-        speed: position.coords.speed
-      }
+        speed: position.coords.speed,
+      },
     };
   }
 }

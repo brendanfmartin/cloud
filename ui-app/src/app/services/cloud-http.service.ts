@@ -3,10 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CloudHttpService {
-
   constructor(private http: HttpClient) { }
 
   get(url: string): Observable<any> {

@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Thought } from '../models/thought';
 import { HttpClient } from '@angular/common/http';
+import { Thought } from '../models/thought';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThoughtService {
-
   constructor(private http: HttpClient) { }
 
   getThoughts(): Observable<any> {
@@ -16,7 +15,7 @@ export class ThoughtService {
 
   findCoffee(position: Position): Observable<any> {
     return this.http.post('http://localhost:3000/coffee',
-      {latitude: position.coords.latitude, longitude: position.coords.longitude});
+      { latitude: position.coords.latitude, longitude: position.coords.longitude });
   }
 
   addThought(thought: Thought): Observable<any> {
@@ -24,10 +23,10 @@ export class ThoughtService {
     thought.loc.long = (parseFloat(thought.loc.long) + Math.random() / 100).toString();
 
     // todo - add this to localstorage and map
-    return this.http.post('http://localhost:3000/thought', thought, {headers: {'content-type': 'application/json'}});
+    return this.http.post('http://localhost:3000/thought', thought, { headers: { 'content-type': 'application/json' } });
   }
 
   deleteThoughts(): Observable<any> {
-    return this.http.delete('http://localhost:3000/thoughts', {headers: {'content-type': 'application/json'}});
+    return this.http.delete('http://localhost:3000/thoughts', { headers: { 'content-type': 'application/json' } });
   }
 }
