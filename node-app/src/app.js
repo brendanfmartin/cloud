@@ -25,6 +25,23 @@ let thoughts = [];
  *
  *
  *  WHERE THE SOCKET JOINED ROOM IS THE BINARY OF THE COORDS?
+ *
+ *
+ *
+ *  user inits map
+ *
+ *  send geo spacial to ... redis
+ *
+ *  the message
+ *  send msg-geo to redis
+ *
+ *  to find a message select * in an area
+ *
+ *
+ *  given a point, can we select all squares that encompass it?
+ *  if so, thats the rooms/sockets we send the pub too
+ *
+ *
  */
 
 
