@@ -5,29 +5,7 @@ const uuidv4 = require('uuid/v4');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const requestIp = require('request-ip');
-
-/**
- * AMAZON STUFF
- */
-
-const AWS = require('aws-sdk');
-
-AWS.config.update({ region: 'us-east-1' });
-
-const ddb = new AWS.DynamoDB();
-const ddbGeo = require('dynamodb-geo');
-
-const dbname = 'wheresStarbucks';
-
-const config = new ddbGeo.GeoDataManagerConfiguration(ddb, dbname);
-config.hashKeyLength = 5;
-
-const myGeoTableManager = new ddbGeo.GeoDataManager(config);
-
-/**
- * END AMAZON STUFF
- */
-
+const { Client } = require('pg');
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -48,8 +26,6 @@ let thoughts = [];
  *
  *  WHERE THE SOCKET JOINED ROOM IS THE BINARY OF THE COORDS?
  */
-
-
 
 
 io.on('connection', socket => {
@@ -101,6 +77,26 @@ app.get('/thought/:id', (req, res) => {
   // res.json({message: 'accepted', thoughts}).end();
 });
 
+app.get('/db', async (req, res) => {
+  const client = new Client({
+    user: 'gis',
+    host: 'localhost',
+    database: 'gis',
+    password: 'gis',
+    port: 5432,
+  });
+
+  client.connect()
+    .then(x => console.log('connected', x))
+    .then(() => client.query('SELECT NOW()'))
+    .then(r => res.json({r}).end())
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({err}).end();
+    });
+
+});
+
 app.post('/thought', (req, res) => {
   const id = uuidv4();
   thoughts.push({id, ...req.body});
@@ -110,44 +106,4 @@ app.post('/thought', (req, res) => {
 app.delete('/thoughts', (req, res) => {
   thoughts = [];
   res.json({message: 'deleted', thoughts}).end();
-});
-
-app.post('/coffee', (req, res) => {
-  myGeoTableManager.queryRadius({
-    RadiusInMeter: req.body.radius || 10000,
-    CenterPoint: {
-      latitude: req.body.latitude,
-      longitude: req.body.longitude,
-    },
-  })
-    .then((locations) => res.json(locations).end());
-});
-
-app.post('/thought/dynamo', (req, res) => {
-  console.log(req.body);
-
-  const b = req.body;
-
-  const input = [{
-    RangeKeyValue: { S: uuidv4() },
-    GeoPoint: {
-      latitude: b.position.coords.latitude,
-      longitude: b.position.coords.longitude
-    },
-    PutItemInput: {
-      Item: {
-        thought: { S: b.thought },
-        position: { M: b.position },
-      },
-    }
-  }];
-
-  myGeoTableManager.batchWritePoints(input)
-    .promise()
-    .then((res) => console.log(res))
-    .then(() => res.json({ok: 'ok'}).end())
-    .catch((error) => {
-      console.error(error);
-      res.status(500).json({error: 'error inserting'}).end()
-    })
 });
