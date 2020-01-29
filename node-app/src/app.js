@@ -105,7 +105,7 @@ app.get('/db', async (req, res) => {
 
   client.connect()
     .then(x => console.log('connected', x))
-    .then(() => client.query('SELECT NOW()'))
+    .then(() => client.query('SELECT * from information_schema.tables'))
     .then(r => res.json({r}).end())
     .catch((err) => {
       console.error(err);
