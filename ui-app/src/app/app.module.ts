@@ -16,7 +16,7 @@ import { MatButtonModule } from "@angular/material/button";
 import { MapComponent } from './map/map.component';
 import { PermissionComponent } from './permission/permission.component';
 
-const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
+const config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 
 @NgModule({
   declarations: [

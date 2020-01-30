@@ -45,32 +45,45 @@ let thoughts = [];
  */
 
 
+/**
+ * helpful documentation
+ *
+ * move to readme
+ *
+ *
+ * https://stackoverflow.com/questions/32674391/io-emit-vs-socket-emit
+ */
+
+
+/**
+ * think about this as one per connection
+ */
 io.on('connection', socket => {
+
   let previousId;
-  const safeJoin = currentId => {
+
+  const safeJoin = (currentId) => {
     socket.leave(previousId);
     socket.join(currentId, () => console.log(`Socket ${socket.id} joined room ${currentId}`));
     previousId = currentId;
   };
 
-  socket.on('getThought', thoughtId => {
-    safeJoin(thoughtId);
-    socket.emit('thought', thoughts[thoughtId]);
+  socket.on('getThought', (id) => {
+    console.log('getthing thought with id', id);
+    socket.emit('thought', thoughts[id]);
   });
 
   socket.on('addThought', thought => {
-    thoughts[thought.id] = thought;
-    safeJoin(thought.id);
+    // todo - get the location
+    // thoughts[thought.id] = thought;
+    // io  vs socket emit
     io.emit('thoughts', Object.keys(thoughts));
     socket.emit('thought', thought);
   });
 
-  socket.on('editThought', thought => {
-    thoughts[thought.id] = thought;
-    socket.to(thought.id).emit('thought', thought);
-  });
-
   io.emit('thoughts', Object.keys(thoughts));
+
+  io.on('error', (e) => console.error(e));
 
   console.log(`Socket ${socket.id} has connected`);
 });

@@ -3,6 +3,7 @@ import { Subscription } from 'rxjs';
 import { Thought } from './models/thought';
 import { LocationService } from './services/location.service';
 import { ThoughtService } from './services/thought.service';
+import { SocketService } from "./socket.service";
 
 @Component({
   selector: 'app-root',
@@ -34,14 +35,16 @@ export class AppComponent implements OnInit {
   position: Position;
 
   constructor(private locationService: LocationService,
+              private socketService: SocketService,
               private thoughtService: ThoughtService) {}
 
   ngOnInit() {
     this.prepForLocation();
+    this.getThought('1');
   }
 
   newThought(): void {
-    this.getThoughts();
+    // this.getThoughts();
   }
 
   clearThoughts(): void {
@@ -174,5 +177,14 @@ export class AppComponent implements OnInit {
         console.error(err);
         this.fetchingLocation = false;
       });
+  }
+
+
+
+
+
+
+  private getThought(id: string): void {
+    this.socketService.getThought(id);
   }
 }
