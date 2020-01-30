@@ -10,6 +10,8 @@ import { NewThoughtComponent } from './components/new-thought/new-thought.compon
 import { BubbleComponent } from './components/bubble/bubble.component';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 
@@ -34,6 +36,8 @@ const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 
     // socket
     SocketIoModule.forRoot(config),
+
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   providers: [],
   bootstrap: [AppComponent],
