@@ -5,6 +5,7 @@ import * as _ from 'lodash';
   providedIn: 'root',
 })
 export class LocationService {
+  private readonly permissionKey = 'location_permission';
   private readonly locationKey = 'current_location';
 
   constructor() { }
@@ -17,6 +18,14 @@ export class LocationService {
       return 1000;
     }
     return accuracy;
+  }
+
+  get locationPermission(): boolean {
+    return localStorage.getItem(this.permissionKey) === 'true';
+  }
+
+  set locationPermission(permission: boolean) {
+    permission ? localStorage.setItem(this.permissionKey, 'true') : null;
   }
 
   getLocation(): Promise<Position> {

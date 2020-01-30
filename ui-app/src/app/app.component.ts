@@ -3,7 +3,6 @@ import {Subscription} from 'rxjs';
 import {Thought} from './models/thought';
 import {LocationService} from './services/location.service';
 import {ThoughtService} from './services/thought.service';
-import {core} from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +23,11 @@ export class AppComponent implements OnInit {
 
   localThoughts$: Subscription;
 
+  // todo - this should be states
+  // redux?
   fetchingLocation: boolean;
+  askingPermission: boolean;
+  error: true;
 
   L = window['L'];
 
@@ -36,7 +39,7 @@ export class AppComponent implements OnInit {
               private thoughtService: ThoughtService) {}
 
   ngOnInit() {
-    this.getLocation();
+    this.askForPermission()
   }
 
   newThought(): void {
@@ -119,6 +122,22 @@ export class AppComponent implements OnInit {
     // );
   }
 
+  /**
+   * TODO - make this a route to ask for permission to get location
+   */
+  private prepForLocation(): void {
+    if (navigator.geolocation && this.locationService.locationPermission) {
+      // continue and loading
+      this.getLocation();
+    } else if (navigator.geolocation && !this.locationService.locationPermission) {
+      // ask for permission
+      this.askForPermission();
+    } else {
+      this.notSupported();
+      // cant do that!
+    }
+  }
+
   private getLocation(): void {
     this.fetchingLocation = true;
     console.log('getting location');
@@ -133,6 +152,22 @@ export class AppComponent implements OnInit {
         alert('Failed to retrieve location in a timely manner.');
         console.error(err);
         this.fetchingLocation = false;
+        this.error = true;
       });
+  }
+
+  private askForPermission(): void {
+    this.askingPermission = true;
+    this.fetchingLocation = false;
+  }
+
+  private givePermission(): void {
+    this.locationService.locationPermission = true;
+    this.askingPermission = false;
+    this.getLocation();
+  }
+
+  private notSupported(): void {
+
   }
 }

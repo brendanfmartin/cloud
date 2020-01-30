@@ -1,9 +1,13 @@
+<div *ngIf="askingPermission" style="height: 100%; background: black; z-index: 99999; position: absolute">
+  <button style="width: 100%; height: 300px; background: darkgray; color: black" (click)="givePermission()">Get Location</button>
+</div>
+
 <ng-container *ngIf="fetchingLocation" style="height: 100%">
   <h1>fetching location</h1>
 </ng-container>
 
 <ng-container>
-  <section class="header" style="position: fixed; top: 0; height: 20px; z-index: 99999">
+  <section class="header" style="position: fixed; top: 0; height: 20px; z-index: 100">
     <button (click)="clearThoughts()">Clear my head</button>
   </section>
 
@@ -15,6 +19,11 @@
   <section class="footer" style="position: fixed; bottom: 0; height: 100px; z-index: 99999">
     <app-new-thought (newThought)="newThought()"></app-new-thought>
   </section>
+</ng-container>
+
+<ng-container *ngIf="error" style="height: 100%">
+  <h1>There was an error fetching location</h1>
+  <button (click)="givePermission()">Retry</button>
 </ng-container>
 
 
