@@ -1,9 +1,19 @@
-<ng-container *ngIf="fetchingLocation" style="height: 100%">
-  <h1>fetching location</h1>
-</ng-container>
+<div *ngIf="askingPermission"
+     style="height: 100%; width: 100%; background: black; z-index: 99999; position: absolute; display: grid; align-content: center; justify-items: center; color: white; text-align: center">
+  <div>
+    <h2>We'll need your location</h2>
+    <br>
+    <br>
+    <button mat-raised-button (click)="givePermission()">Let's Go</button>
+  </div>
+</div>
 
-<ng-container>
-  <section class="header" style="position: fixed; top: 0; height: 20px; z-index: 99999">
+<div *ngIf="fetchingLocation" style="height: 100%">
+  <h1>fetching location</h1>
+</div>
+
+<div style="height: 100%; width: 100%; background: black; z-index: 99998; position: absolute">
+  <section class="header" style="position: fixed; top: 0; height: 20px; z-index: 100">
     <button (click)="clearThoughts()">Clear my head</button>
   </section>
 
@@ -15,9 +25,12 @@
   <section class="footer" style="position: fixed; bottom: 0; height: 100px; z-index: 99999">
     <app-new-thought (newThought)="newThought()"></app-new-thought>
   </section>
-</ng-container>
+</div>
 
-
+<div *ngIf="error" style="height: 100%">
+  <h1>There was an error fetching location</h1>
+  <button (click)="givePermission()">Retry</button>
+</div>
 
 <!-- for when we add routes-->
 <router-outlet></router-outlet>

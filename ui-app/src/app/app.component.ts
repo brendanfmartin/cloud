@@ -3,7 +3,6 @@ import {Subscription} from 'rxjs';
 import {Thought} from './models/thought';
 import {LocationService} from './services/location.service';
 import {ThoughtService} from './services/thought.service';
-import {core} from '@angular/compiler';
 
 @Component({
   selector: 'app-root',
@@ -25,6 +24,8 @@ export class AppComponent implements OnInit {
   localThoughts$: Subscription;
 
   fetchingLocation: boolean;
+  askingPermission: boolean;
+  error: boolean;
 
   L = window['L'];
 
@@ -36,7 +37,7 @@ export class AppComponent implements OnInit {
               private thoughtService: ThoughtService) {}
 
   ngOnInit() {
-    this.getLocation();
+    this.prepForLocation();
   }
 
   newThought(): void {
@@ -103,20 +104,39 @@ export class AppComponent implements OnInit {
       },
     );
 
-    // this.thoughtService.findCoffee(this.position, 100000).subscribe(
-    //   (coffee: object[]) => {
-    //     coffee.map((c: any) => {
-    //       const coordinates = JSON.parse(c.geoJson['S']).coordinates;
-    //       console.log(coordinates);
-    //       this.L.marker([
-    //         coordinates[1],
-    //         coordinates[0]
-    //       ]).addTo(this.map)
-    //         .bindPopup(c.coffee)
-    //     });
-    //   },
-    //   (rej) => console.error(rej),
-    // );
+  }
+
+  /**
+      * TODO  make this a route to ask for permission to get location
+      */
+  private prepForLocation(): void {
+    if (navigator.geolocation && this.locationService.locationPermission) {
+      // continue and loading
+      this.getLocation();
+    } else if (navigator.geolocation && !this.locationService.locationPermission) {
+      // ask for permission
+      this.askForPermission();
+    } else {
+      this.notSupported();
+      // cant do that!
+    }
+  }
+
+
+
+  private askForPermission(): void {
+    this.askingPermission = true;
+    this.fetchingLocation = false;
+  }
+
+  private givePermission(): void {
+    this.locationService.locationPermission = true;
+    this.askingPermission = false;
+    this.getLocation();
+  }
+
+  private notSupported(): void {
+
   }
 
   private getLocation(): void {

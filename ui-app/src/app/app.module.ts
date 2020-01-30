@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { MatButtonModule } from "@angular/material/button";
 
 const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 
@@ -31,13 +32,14 @@ const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
     BrowserAnimationsModule,
     MatSliderModule,
     MatInputModule,
+    MatButtonModule,
 
     HttpClientModule,
 
     // socket
     SocketIoModule.forRoot(config),
 
-    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
+    ServiceWorkerModule.register('ngsw-worker.js', {enabled: environment.production}),
   ],
   providers: [],
   bootstrap: [AppComponent],
