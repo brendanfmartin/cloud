@@ -13,6 +13,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { MatButtonModule } from "@angular/material/button";
+import { MapComponent } from './map/map.component';
+import { PermissionComponent } from './permission/permission.component';
 
 const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 
@@ -21,6 +23,8 @@ const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
     AppComponent,
     BubbleComponent,
     NewThoughtComponent,
+    MapComponent,
+    PermissionComponent,
   ],
   imports: [
     BrowserModule,

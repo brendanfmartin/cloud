@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {Subscription} from 'rxjs';
-import {Thought} from './models/thought';
-import {LocationService} from './services/location.service';
-import {ThoughtService} from './services/thought.service';
+import { Component, OnInit } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { Thought } from './models/thought';
+import { LocationService } from './services/location.service';
+import { ThoughtService } from './services/thought.service';
 
 @Component({
   selector: 'app-root',

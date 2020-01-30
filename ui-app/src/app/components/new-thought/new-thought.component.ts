@@ -1,7 +1,7 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {LocationService} from '../../services/location.service';
-import {ThoughtService} from '../../services/thought.service';
-import {Loc, Thought} from '../../models/thought';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { LocationService } from '../../services/location.service';
+import { ThoughtService } from '../../services/thought.service';
+import { Thought } from '../../models/thought';
 
 // https://stackoverflow.com/questions/6878761/javascript-how-to-create-random-longitude-and-latitudes
 @Component({
