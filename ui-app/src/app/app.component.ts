@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
   }
 
   newThought(): void {
-    // this.getThoughts();
+    this.getThoughts();
   }
 
   clearThoughts(): void {

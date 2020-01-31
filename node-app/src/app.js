@@ -84,7 +84,7 @@ let connectPromise = undefined;
 
 const connect = () => {
   if (connectPromise) {
-    return new Promise(connectPromise);
+    return connectPromise;
   } else {
     connectPromise = client.connect();
     return connectPromise;
@@ -102,9 +102,9 @@ const client = new Client({
 const userGeoQuery = `SELECT CONCAT('SRID=4326;', ST_AsText( ST_MakeEnvelope($1, $2, $3, $4, 4326) )):: geography;`;
 const getUserGeo = (location) => {
   connect()
-    .then(x => console.log('connected', x))
+    .then(x => console.log('connected'))
     .then(() => client.query(userGeoQuery, [location._southWest.lat, location._southWest.lng, location._northEast.lat, location._northEast.lng]))
-    .then(r => console.log({r}))
+    .then(r => console.log(r.rows[0]))
     .catch((err) => {
       console.error(err);
       res.status(500).json({err}).end();
