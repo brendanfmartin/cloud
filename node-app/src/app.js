@@ -12,8 +12,6 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(requestIp.mw());
 
-let thoughts = [];
-
 /**
  *  IF WE STORE THE COORDINATES OF THE THOUGHTS
  *
@@ -44,6 +42,15 @@ let thoughts = [];
  *
  */
 
+/**
+ * TODO - BUILD A COMMON LAT LONG DICTIONARY
+ *
+ *  leaflet
+ *  {"_southWest":{"lat":40.03270782042911,"lng":-75.36535263061525},"_northEast":{"lat":40.054391515684486,"lng":-75.34767150878908}}
+ *  navigator.geoposition
+ *  {"timestamp":1580401116551,"coords":{"accuracy":20,"altitude":null,"altitudeAccuracy":null,"heading":null,"latitude":40.0435483,"longitude":-75.3565279,"speed":null}}
+ *
+ */
 
 /**
  * helpful documentation
@@ -70,6 +77,41 @@ let thoughts = [];
  */
 
 
+let thoughts = [];
+let channels = [];
+
+let connectPromise = undefined;
+
+const connect = () => {
+  if (connectPromise) {
+    return new Promise(connectPromise);
+  } else {
+    connectPromise = client.connect();
+    return connectPromise;
+  }
+};
+
+const client = new Client({
+  user: 'gis',
+  host: 'localhost',
+  database: 'gis',
+  password: 'gis',
+  port: 5432,
+});
+
+const userGeoQuery = `SELECT CONCAT('SRID=4326;', ST_AsText( ST_MakeEnvelope($1, $2, $3, $4, 4326) )):: geography;`;
+const getUserGeo = (location) => {
+  connect()
+    .then(x => console.log('connected', x))
+    .then(() => client.query(userGeoQuery, [location._southWest.lat, location._southWest.lng, location._northEast.lat, location._northEast.lng]))
+    .then(r => console.log({r}))
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({err}).end();
+    });
+};
+
+
 /**
  * think about this as one per connection
  */
@@ -85,10 +127,30 @@ io.on('connection', socket => {
    * @param nextId <string>
    */
   const safeJoin = (nextId) => {
+    // leave channel
     socket.leave(currentId);
+
+    // remove channelId from list
+    channels = channels.filter(c => c !== currentId);
+
+    // join channel
     socket.join(nextId, () => console.log(`Socket ${socket.id} joined room ${currentId}`));
+
+    // add channelId to list
+    channels.push(nextId);
+
+    // assign currentId
     currentId = nextId;
   };
+
+  socket.on('setLocation', (location) => {
+    console.log(location);
+    console.log(JSON.parse(location)._southWest.lat);
+    // {"_southWest":{"lat":40.03270782042911,"lng":-75.36535263061525},"_northEast":{"lat":40.054391515684486,"lng":-75.34767150878908}}
+    getUserGeo(JSON.parse(location));
+    safeJoin(location);
+    socket.emit('locationSet', location);
+  });
 
   socket.on('getThought', (id) => {
     console.log('getthing thought with id', id);
@@ -130,15 +192,7 @@ app.get('/thought/:id', (req, res) => {
 });
 
 app.get('/db', async (req, res) => {
-  const client = new Client({
-    user: 'gis',
-    host: 'localhost',
-    database: 'gis',
-    password: 'gis',
-    port: 5432,
-  });
-
-  client.connect()
+  connect()
     .then(x => console.log('connected', x))
     .then(() => client.query('SELECT * from information_schema.tables'))
     .then(r => res.json({r}).end())

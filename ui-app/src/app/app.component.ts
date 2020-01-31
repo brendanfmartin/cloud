@@ -79,25 +79,8 @@ export class AppComponent implements OnInit {
       radius: LocationService.accuracyConversion(this.position.coords.accuracy),
     }).addTo(this.map);
 
-    console.log(this.map.getBounds());
-
-    this.map.on('moveend', () => {
-      console.log(this.map.getBounds());
-      // {
-      //   "_southWest": {
-      //   "lat": 39.95593818515614,
-      //     "lng": -75.18158912658693
-      // },
-      //   "_northEast": {
-      //   "lat": 39.98264473554439,
-      //     "lng": -75.16549587249757
-      // }
-      // }
-
-      // can we derive all 4 corners accurate or will the curvature of the earth mess w/ it?
-      //
-
-    });
+    this.setLocationSocket();
+    this.map.on('moveend', () => this.setLocationSocket());
 
     this.getThoughts();
   }
@@ -181,7 +164,21 @@ export class AppComponent implements OnInit {
 
 
 
-
+  private setLocationSocket(): void {
+    // {
+    //   "_southWest": {
+    //   "lat": 39.95593818515614,
+    //     "lng": -75.18158912658693
+    // },
+    //   "_northEast": {
+    //   "lat": 39.98264473554439,
+    //     "lng": -75.16549587249757
+    // }
+    // }
+    console.log(this.map.getBounds());
+    this.socketService.setLocation(JSON.stringify(this.map.getBounds()));
+    this.socketService.locationSet.subscribe((res) => console.log('hey i got an emited thing\n', res))
+  }
 
 
   private getThought(id: string): void {
