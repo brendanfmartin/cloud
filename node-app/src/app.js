@@ -91,6 +91,7 @@ const connect = () => {
   }
 };
 
+// todo - how do this? process.env? secure ssm params in a kms?
 const client = new Client({
   user: 'gis',
   host: 'localhost',
