@@ -31,7 +31,9 @@ export class LocationService {
 
   getLocation(): Promise<Position> {
     return new Promise((resolve, reject) => {
-      if (localStorage.getItem(this.locationKey)) {
+      const localLocation = JSON.parse(localStorage.getItem(this.locationKey));
+      console.log(new Date(localLocation.timestamp).setMinutes(-5) < new Date().setMinutes(-5));
+      if (localLocation && new Date(localLocation.timestamp).setMinutes(-5) > new Date().setMinutes(-5)) {
         resolve(JSON.parse(localStorage.getItem(this.locationKey)) as Position);
       } else {
         const options = {
