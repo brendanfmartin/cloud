@@ -77,6 +77,7 @@ app.use(requestIp.mw());
  */
 
 
+let sessionId;
 let thoughts = [];
 let channels = [];
 
@@ -100,16 +101,27 @@ const client = new Client({
   port: 5432,
 });
 
-const userGeoQuery = `SELECT CONCAT('SRID=4326;', ST_AsText( ST_MakeEnvelope($1, $2, $3, $4, 4326) )):: geography;`;
+const getUserGeoQuery = `SELECT CONCAT('SRID=4326;', ST_AsText( ST_MakeEnvelope($1, $2, $3, $4, 4326) )):: geography;`;
 const getUserGeo = (location) => {
   connect()
-    .then(x => console.log('connected'))
-    .then(() => client.query(userGeoQuery, [location._southWest.lat, location._southWest.lng, location._northEast.lat, location._northEast.lng]))
+    .then(() => console.log('connected'+  location._southWest.lat, location._southWest.lng, location._northEast.lat, location._northEast.lng))
+    .then(() => client.query(getUserGeoQuery, [location._southWest.lat, location._southWest.lng, location._northEast.lat, location._northEast.lng]))
     .then(r => console.log(r.rows[0]))
-    .catch((err) => {
-      console.error(err);
-      res.status(500).json({err}).end();
-    });
+    .catch((err) => console.error(err));
+};
+
+const storeUserQuery = `
+INSERT INTO channels VALUES ($1, ST_AsText( ST_MakeEnvelope($2, $3, $4, $5, 4326) ):: geography)
+ON CONFLICT ON CONSTRAINT channels_pkey
+DO
+      UPDATE
+      set location = ST_AsText( ST_MakeEnvelope(10, 10, 11, 11, 4326) ):: geography;`;
+const storeUserLocation = (location) => {
+  connect()
+    .then(() => console.log('connected'))
+    .then(() => client.query(storeUserQuery, [sessionId, location._southWest.lat, location._southWest.lng, location._northEast.lat, location._northEast.lng]))
+    .then(r => console.log(r.rows[0]))
+    .catch((err) => console.error(err));
 };
 
 
@@ -148,7 +160,7 @@ io.on('connection', socket => {
     console.log(location);
     console.log(JSON.parse(location)._southWest.lat);
     // {"_southWest":{"lat":40.03270782042911,"lng":-75.36535263061525},"_northEast":{"lat":40.054391515684486,"lng":-75.34767150878908}}
-    getUserGeo(JSON.parse(location));
+    storeUserLocation(JSON.parse(location));
     safeJoin(location);
     socket.emit('locationSet', location);
   });
@@ -170,7 +182,9 @@ io.on('connection', socket => {
 
   io.on('error', (e) => console.error(e));
 
-  console.log(`Socket ${socket.id} has connected`);
+  sessionId = uuidv4();
+  console.log(`Socket ${socket.id} has connected. Session id ${sessionId}`);
+
 });
 
 const port = process.env.PORT || 3000;
