@@ -41,6 +41,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.prepForLocation();
     this.getThought('1');
+    this.getThoughts();
   }
 
   newThought(): void {
@@ -81,16 +82,10 @@ export class AppComponent implements OnInit {
 
     this.setLocationSocket();
     this.map.on('moveend', () => this.setLocationSocket());
-
-    this.getThoughts();
   }
 
   private getThoughts(): void {
     console.log('getting thoughts');
-
-    // todo - order of build map and get thoughts
-    this.buildMap();
-
     this.localThoughts$ = this.thoughtService.getThoughts().subscribe(
       (res) => {
         this.thoughts = res;
